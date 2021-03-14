@@ -7,6 +7,7 @@ import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
 import com.uweeldteam.game.player.inventory.item.ItemType;
+import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class Game extends MonoBehaviour {
             Player().Stats().health -= 2;
     }
 
-    void Eat(Item food) {
+    void Eat(@NotNull Item food) {
         if (food.Type() != ItemType.food)
             throw new IllegalArgumentException("Item is not food!");
         Player().Stats().food -= Random.Range(food.Food());
