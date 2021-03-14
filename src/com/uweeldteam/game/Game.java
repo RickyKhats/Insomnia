@@ -2,6 +2,7 @@ package com.uweeldteam.game;
 
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
+import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -157,7 +158,15 @@ public class Game extends MonoBehaviour {
                 break;
             case "использовать":
                 switch (messages.get(1)){
-
+                    default:
+                        switch (messages.get(1) + " " + messages.get(1)){
+                            case "маленький паёк":
+                                Eat(smallAllowance);
+                                break;
+                            case "бутелированную воду":
+                                Eat(bottledWater);
+                                break;
+                        }
                 }
             default:
                 throw new IllegalStateException("Unexpected value: " + messages.get(0));
