@@ -3,14 +3,18 @@ package com.uweeldteam.game.player.inventory;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
+import javafx.print.Collation;
 import uweellibs.Console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 
 import static com.uweeldteam.game.player.inventory.item.Item.nullItem;
 
 public class Inventory {
+
 
     static class Container {
         ArrayList<Slot> slots;
@@ -143,6 +147,13 @@ public class Inventory {
             if (showMessage)
                 Console.Println("Вы получили " + remains.Item().Names(1).toLowerCase() + (gotten + got > 1 ? " X" + (gotten + got) : ""));
         }
+    }
+
+    public boolean Contains(Item item){
+        for(int i = 0; i < containers().size(); i++)
+            if(containers().get(i).item == item)
+                return true;
+        return false;
     }
 
     private int FindFirstAvailableSlot(Slot slot, ArrayList<Slot> slots) {

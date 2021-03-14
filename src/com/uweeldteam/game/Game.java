@@ -157,14 +157,26 @@ public class Game extends MonoBehaviour {
                 }
                 break;
             case "использовать":
-                switch (messages.get(1)){
+                switch (messages.get(1)) {
                     default:
-                        switch (messages.get(1) + " " + messages.get(1)){
+                        switch (messages.get(1) + " " + messages.get(1)) {
                             case "маленький паёк":
-                                Eat(smallAllowance);
+                                if (Player().Inventory().Contains(smallAllowance)) {
+                                    Player().Inventory().DeleteItems(smallAllowance);
+                                    Eat(smallAllowance);
+                                    Console.Println("Вы съели маленький паёк");
+                                }
+                                else
+                                    Console.Println("У вас нет маленького пайка");
                                 break;
                             case "бутелированную воду":
-                                Eat(bottledWater);
+                                if (Player().Inventory().Contains(bottledWater)) {
+                                    Player().Inventory().DeleteItems(bottledWater);
+                                    Eat(bottledWater);
+                                    Console.Println("Вы выпили бутылку воды");
+                                }
+                                else
+                                    Console.Println("У вас нет бутылки воды");
                                 break;
                         }
                 }
