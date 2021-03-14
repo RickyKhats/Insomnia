@@ -1,0 +1,35 @@
+{
+  "game": {
+    "player": {
+      "stats": {
+        "name": "Ricky Khats",
+        "health": 100.0,
+        "food": 0.0,
+        "water": 0.0,
+        "strength": 1.0,
+        "satiety": 15.04,
+        "drunkenness": 15.04
+      },
+      "hands": [
+        {
+          "item": "nullItem",
+          "value": 0
+        },
+        {
+          "item": "nullItem",
+          "value": 0
+        }
+      ],
+      "inventory": {},
+      "backpack": "backpack",
+      "pants": "nullItem",
+      "torso": "nullItem",
+      "firstWeapon": "ironAxe",
+      "pouch": "nullItem",
+      "secondWeapon": "nullItem",
+      "localUpdateTime": 50
+    },
+    "localUpdateTime": 50
+  },
+  "localUpdateTime": 50
+}
