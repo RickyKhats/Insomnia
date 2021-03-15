@@ -63,13 +63,8 @@ public class Fight {
             Console.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " сильные увечия.");
         if (enemy.health <= 0) {
             Console.Println("Поздравляем, вы победили " + enemy.names[1].toLowerCase());
-            int i = 0;
-            while (i < enemy.drop.length) {
-                if (Random.Percent(40)) {
-                    Player().Inventory().AddItem(new Slot(enemy.drop[i], 1));
-                }
-                i++;
-            }
+            for (int i = 0; i < enemy.drop.length; i++)
+                Player().Inventory().AddItem(new Slot(enemy.drop[i], 1));
             return;
         }
         Console.Println("Здоровье противника: " +
@@ -114,12 +109,11 @@ public class Fight {
     }
 
     private static void Block() {
-        if(Random.Percent(36)){
+        if (Random.Percent(36)) {
             Console.Println("Вы успешно прикрылись от удара противника.");
             energy += 4;
             ReadCommand();
-        }
-        else {
+        } else {
             Console.Println("Вам не удалось прикрыться от удара противника.");
             energy += 3;
             EnemyAttack();

@@ -90,7 +90,7 @@ public class Game extends MonoBehaviour {
     private void ReadCommand(ArrayList<String> messages) {
         switch (messages.get(0)) {
             case "охота":
-                new Fight();
+                Fight fight = new Fight();
                 break;
             case "профиль":
                 Console.Println(Player().toString());
@@ -98,7 +98,8 @@ public class Game extends MonoBehaviour {
             case "инвентарь":
                 Console.Println(
                         "Инвентарь:",
-                        "Руки(" + Player().AllHandsMass() + "/" + Player().MaxHandsMass() + "):",
+                        "Руки(" + String.format("%.2f", Player().AllHandsMass()) + "/"
+                                + String.format("%.2f", Player().MaxHandsMass()) + "Кг):",
                         Player().Inventory().toString(Player().Hands()),
                         Player().Inventory().toString(Player().Backpack()),
                         Player().Inventory().toString(Player().Pouch()),
@@ -184,7 +185,7 @@ public class Game extends MonoBehaviour {
                         }
                 }
             default:
-                throw new IllegalStateException("Unexpected value: " + messages.get(0));
+                Console.Println("Такой команды не существует");
         }
         Save();
     }

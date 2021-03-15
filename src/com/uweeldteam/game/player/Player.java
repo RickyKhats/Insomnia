@@ -50,7 +50,6 @@ public class Player extends MonoBehaviour {
 
     public Stats stats;
 
-
     ArrayList<Slot> hands = new ArrayList<>(Arrays.asList(new Slot(), new Slot()));
 
     public ArrayList<Slot> Hands() {
