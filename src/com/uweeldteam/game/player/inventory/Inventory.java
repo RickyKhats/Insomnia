@@ -3,13 +3,10 @@ package com.uweeldteam.game.player.inventory;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
-import javafx.print.Collation;
 import uweellibs.Console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
 
 import static com.uweeldteam.game.player.inventory.item.Item.nullItem;
 

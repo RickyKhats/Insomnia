@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 public class Fight {
     static Mob enemy;
+    static int energy;
 
     public static ArrayList<Mob> AllMobs() {
         return new ArrayList<>(Arrays.asList(Mob.values()));
@@ -49,6 +50,7 @@ public class Fight {
     }
 
     private static void PlayerAttack() {
+        energy -= 1;
         float damage = BlockEnemy(Random.Range(enemy.damage));
         enemy.health -= damage;
         if (damage < 5)
@@ -70,7 +72,9 @@ public class Fight {
             }
             return;
         }
-        Console.Println("Здоровье противника: " + String.format("%.2f", enemy.health));
+        Console.Println("Здоровье противника: " +
+                String.format("%.2f", enemy.health) +
+                "Энергия: " + energy);
         EnemyAttack();
     }
 
@@ -101,9 +105,24 @@ public class Fight {
             case "атаковать":
                 PlayerAttack();
                 break;
+            case "прикрыться":
+                Block();
             default:
                 Console.Println("Такой команды не существует");
                 ReadCommand();
+        }
+    }
+
+    private static void Block() {
+        if(Random.Percent(36)){
+            Console.Println("Вы успешно прикрылись от удара противника.");
+            energy += 4;
+            ReadCommand();
+        }
+        else {
+            Console.Println("Вам не удалось прикрыться от удара противника.");
+            energy += 3;
+            EnemyAttack();
         }
     }
 
