@@ -13,8 +13,8 @@ public enum Item {
     bottledWater(1.1f,  4, new Range(0, 0), new Range(1,5), new Range(0,0), new Range(0, 2), new Craft(bottle), "Бутылка с водой", "Бутылку с водой"),
     wood(4.4f, 4, "Бревно", "Бревно"),
     ironBar(4.4f, 1, "Железный слиток", "Железный слиток"),
-    redIronStone(0.1f, 1, ironBar, "Красный железняк", "Красный железняк"),
-    ironOre(1, 12, ironBar, "Железная руда", "Железную руду"),
+    redIronStone(0.1f, 0.2f, 3, ironBar, "Красный железняк", "Красный железняк"),
+    ironOre(1, 0.2f, 3, ironBar, "Железная руда", "Железную руду"),
     ironPickaxe(4.6f, new Range(10, 50), new Craft(wood, ironBar), "Железная кирка", "Железную кирку"),
     ironAxe(4.4f, new Range(10, 40), new Craft(wood, ironBar), "Железный топор", "Железный топор"),
     smallAllowance(2.1f, 2, new Range(10, 40), new Range(10, 40), new Range(0, 2), new Range(0, 1), "Маленький паёк", "Маленький паёк"),
@@ -113,10 +113,11 @@ public enum Item {
         Names(names);
     }
     //ore
-    Item(float barPercent, int maxMass, Item bar, String... names) {
+    Item(float barPercent, float mass, float maxMass, Item bar, String... names) {
         Type(ItemType.ore);
         BarPercent(barPercent);
-        MaxMass((short) maxMass);
+        Mass(mass);
+        MaxMass(maxMass);
         Bar(bar);
         Names(names);
     }
@@ -153,6 +154,7 @@ public enum Item {
     public ArrayList<Slot> Slots() {
         return slots;
     }
+
     void Damage(Range damage) {
         this.damage = damage;
     }
@@ -168,6 +170,8 @@ public enum Item {
     }
 
     public short MaxStack() {
+        if(Type().equals(ItemType.ore))
+            return (short) (maxMass / mass);
         return maxStack;
     }
     void MaxStack(short maxStack) {
@@ -218,7 +222,7 @@ public enum Item {
         }
         return result;
     }
-    void MaxMass(int maxMass) {
+    void MaxMass(float maxMass) {
         this.maxMass = maxMass;
     }
     public float MaxMass() {

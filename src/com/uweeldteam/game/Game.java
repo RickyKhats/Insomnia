@@ -96,12 +96,12 @@ public class Game extends MonoBehaviour {
             switch (messages.get(0)) {
                 case "использовать":
                     for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
-                        String item = "";
+                        StringBuilder item = new StringBuilder();
                         for (int j = 1; j < messages.size(); j++) {
-                            item += messages.get(j);
+                            item.append(messages.get(j));
                         }
                         Item Item = Player().Inventory().AllItems()[i];
-                        if (item.equals(Item.Names(0).replaceAll(" ", "").toLowerCase()) || item.equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                        if (item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase()) || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
                             if (Player().Inventory().Contains(Item)) {
                                 Player().Inventory().DeleteItems(Item);
                                 Use(Item);
@@ -111,20 +111,19 @@ public class Game extends MonoBehaviour {
                     }
                 case "получить":
                     for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
-                        String item = "";
+                        StringBuilder item = new StringBuilder();
                         int value = 1;
                         for (int j = 1; j < messages.size(); j++) {
                             try {
                                 value = Integer.parseInt(messages.get(j));
                             } catch (Exception e) {
-                                item += (messages.get(j));
+                                item.append(messages.get(j));
                             }
                         }
                         Item Item = Player().Inventory().AllItems()[i];
-                        Console.Println(Item);
                         if (
-                                item.equals(Item.Names(0).replaceAll(" ", "").toLowerCase())
-                                        ||item.equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                                item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase())
+                                        || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
                             Get(Item, value);
                             return;
                         }

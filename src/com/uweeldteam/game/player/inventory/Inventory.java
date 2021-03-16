@@ -16,7 +16,7 @@ public class Inventory {
 
     public Item[] AllItems(){
         return  Item.values();
-    };
+    }
 
     static class Container {
         ArrayList<Slot> slots;
@@ -136,7 +136,7 @@ public class Inventory {
             int f = FindFirstAvailableSlot(remains, container.Slots());
             try {
                 remains = container.Slots().get(f).Add(remains);
-            } catch (ArrayIndexOutOfBoundsException ignored) {
+            } catch (IndexOutOfBoundsException ignored) {
             }
         }
         if (remains.Value() > 0) {
