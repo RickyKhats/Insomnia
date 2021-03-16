@@ -67,7 +67,6 @@ public class Inventory {
     }
 
     public boolean DeleteItems(Item... items) {
-        Console.Println("Loop");
         ArrayList<Item> craft = new ArrayList<>(Arrays.asList(items));
         ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
         for (int i = 0; i < containers().size(); i++) {
@@ -79,6 +78,7 @@ public class Inventory {
                 for (int ii = 0; ii < craft.size(); ii++)
                     try {
                         Console.Println(container + " " + i + " " + ii);
+                        Console.Println(craft.get(ii));
                         if (container.get(i).Item() == craft.get(ii)) {
                             container.get(i).Remove(new Slot(craft.get(ii), (short) 0));
                             touched = true;
@@ -92,7 +92,6 @@ public class Inventory {
             if (!touched) {
                 return true;
             }
-            DeleteItems(craft.toArray(new Item[]{}));
         }
         Console.Println("End.");
         return false;
