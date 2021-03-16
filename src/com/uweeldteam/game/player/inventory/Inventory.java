@@ -5,6 +5,7 @@ import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
 import uweellibs.Console;
 
+import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,6 +13,10 @@ import static com.uweeldteam.game.player.inventory.item.Item.nullItem;
 
 public class Inventory {
 
+
+    public Item[] AllItems(){
+        return  Item.values();
+    };
 
     static class Container {
         ArrayList<Slot> slots;
@@ -116,7 +121,7 @@ public class Inventory {
                     int f = FindFirstAvailableSlot(remains, Hands().slots);
                     try {
                         remains = Hands().slots.get(f).Add(remains);
-                    } catch (ArrayIndexOutOfBoundsException ignored) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
             }

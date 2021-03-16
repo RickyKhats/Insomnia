@@ -13,7 +13,7 @@ public enum Item {
     bottledWater(1.1f,  4, new Range(0, 0), new Range(1,5), new Range(0,0), new Range(0, 2), new Craft(bottle), "Бутылка с водой", "Бутылку с водой"),
     wood(4.4f, 4, "Бревно", "Бревно"),
     ironBar(4.4f, 1, "Железный слиток", "Железный слиток"),
-    redIronStone(0.1f, 1, ironBar, "Желехная руда"),
+    redIronStone(0.1f, 1, ironBar, "Красный железняк", "Красный железняк"),
     ironOre(1, 12, ironBar, "Железная руда", "Железную руду"),
     ironPickaxe(4.6f, new Range(10, 50), new Craft(wood, ironBar), "Железная кирка", "Железную кирку"),
     ironAxe(4.4f, new Range(10, 40), new Craft(wood, ironBar), "Железный топор", "Железный топор"),

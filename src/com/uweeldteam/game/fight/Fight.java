@@ -1,6 +1,7 @@
 package com.uweeldteam.game.fight;
 
 import com.uweeldteam.Main;
+import com.uweeldteam.game.Game;
 import com.uweeldteam.game.mob.Mob;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
@@ -65,6 +66,7 @@ public class Fight {
             Console.Println("Поздравляем, вы победили " + enemy.names[1].toLowerCase());
             for (int i = 0; i < enemy.drop.length; i++)
                 Player().Inventory().AddItem(new Slot(enemy.drop[i], 1));
+            Game.canAction = true;
             Main.Engine().Game().ReadCommand();
             return;
         }
@@ -87,6 +89,7 @@ public class Fight {
     }
 
     public void Fight(Mob mob) {
+        Game.canAction = false;
         energy = 15;
         enemy = mob;
         if (enemy == null)
@@ -127,7 +130,8 @@ public class Fight {
             EnemyAttack();
         }
     }
-    private void Help(){
+
+    private void Help() {
         Console.Println("Команды:" +
                 "\nАтаковать - атака противника основным/запасным оружием на выбор." +
                 "\nБлокировать - заблокировать удар противника и восстановить немного сил." +

@@ -2,6 +2,7 @@ package com.uweeldteam.game;
 
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
+import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -10,18 +11,16 @@ import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.uweeldteam.game.player.inventory.item.Item.*;
 
 public class Game extends MonoBehaviour {
+    public static boolean canAction = true;
     Player player;
 
     public Game() {
         Player(new Player());
-    }
-
-    public void PostInit() {
-        ReadCommand();
     }
 
     void CountHunger() {
@@ -61,9 +60,11 @@ public class Game extends MonoBehaviour {
     }
 
     public void PostUpdate() {
-
+        if (canAction)
+            ReadCommand();
     }
-    public void ReadCommand(){
+
+    public void ReadCommand() {
         CountHunger();
         try {
             String message = Console.Read().toLowerCase().replace(" {2}", " ");
@@ -91,116 +92,77 @@ public class Game extends MonoBehaviour {
     }
 
     private void ReadCommand(ArrayList<String> messages) {
-        switch (messages.get(0)) {
-            case "охота":
-                new Fight().Fight();
-                break;
-            case "профиль":
-                Console.Println(Player().toString());
-                break;
-            case "инвентарь":
-                Console.Println(
-                        "Инвентарь:",
-                        "Руки(" + String.format("%.2f", Player().AllHandsMass()) + "/"
-                                + String.format("%.2f", Player().MaxHandsMass()) + "Кг):",
-                        Player().Inventory().toString(Player().Hands()),
-                        Player().Inventory().toString(Player().Backpack()),
-                        Player().Inventory().toString(Player().Pouch()),
-                        Player().Inventory().toString(Player().Pouch()),
-                        Player().Inventory().toString(Player().Pouch()));
-                break;
-            case "получить":
-                switch (messages.get(1)) {
-                    case "бутылку":
-                        Get(bottle, messages, 2);
-                        break;
-                    case "древесину":
-                        Get(wood, messages, 2);
-                        break;
-                    default:
-                        try {
-                            switch (messages.get(1) + " " + messages.get(2)) {
-                                case "железный топор":
-                                    Get(ironAxe, messages, 3);
-                                    break;
-                                case "маленький паёк":
-                                    Get(smallAllowance, messages, 3);
-                                    break;
-                                case "железную кирку":
-                                    Get(ironPickaxe, messages, 3);
-                                    break;
-                                case "железный слиток":
-                                    Get(ironBar, messages, 3);
-                                    break;
-                                default:
-                                    Console.Println("Такого предмета не существует.");
-                                    break;
-                            }
-                        } catch (IndexOutOfBoundsException ignored) {
-                            Console.Println("Такого предмета не существует.");
+        try {
+            switch (messages.get(0)) {
+                case "использовать":
+                    for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
+                        String item = "";
+                        for (int j = 1; j < messages.size(); j++) {
+                            item += messages.get(j);
                         }
-                }
-                break;
-            case "скрафтить":
-
-                try {
-                    switch (messages.get(1)) {
-                        case "":
-                            break;
-                        default:
-                            switch (messages.get(1) + " " + messages.get(2)) {
-                                case "железный топор":
-                                    CraftSystem.Craft(ironAxe);
-                                    break;
-                                case "железную кирку":
-                                    CraftSystem.Craft(ironPickaxe);
-                                    break;
-                                case "бутелированную воду":
-                                    CraftSystem.Craft(bottledWater);
-                                    break;
-                                default:
-                                    Console.Println("Такого предмета не существует");
-                            }
+                        Item Item = Player().Inventory().AllItems()[i];
+                        if (item.equals(Item.Names(0).replaceAll(" ", "").toLowerCase()) || item.equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                            if (Player().Inventory().Contains(Item)) {
+                                Player().Inventory().DeleteItems(Item);
+                                Use(Item);
+                            } else
+                                Console.Println("У вас нет такого предмета.");
+                        }
                     }
-                } catch (IndexOutOfBoundsException ignored) {
-                    Console.Println("Такого предмета не существует");
-                }
-                break;
-            case "использовать":
-                switch (messages.get(1)) {
-                    default:
-                        switch (messages.get(1) + " " + messages.get(1)) {
-                            case "маленький паёк":
-                                if (Player().Inventory().Contains(smallAllowance)) {
-                                    Player().Inventory().DeleteItems(smallAllowance);
-                                    Eat(smallAllowance);
-                                    Console.Println("Вы съели маленький паёк");
-                                } else
-                                    Console.Println("У вас нет маленького пайка");
-                                break;
-                            case "бутелированную воду":
-                                if (Player().Inventory().Contains(bottledWater)) {
-                                    Player().Inventory().DeleteItems(bottledWater);
-                                    Eat(bottledWater);
-                                    Console.Println("Вы выпили бутылку воды");
-                                } else
-                                    Console.Println("У вас нет бутылки воды");
-                                break;
+                case "получить":
+                    for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
+                        String item = "";
+                        int value = 1;
+                        for (int j = 1; j < messages.size(); j++) {
+                            try {
+                                value = Integer.parseInt(messages.get(j));
+                            } catch (Exception e) {
+                                item += (messages.get(j));
+                            }
                         }
-                }
-            default:
-                Console.Println("Такой команды не существует");
+                        Item Item = Player().Inventory().AllItems()[i];
+                        Console.Println(Item);
+                        if (
+                                item.equals(Item.Names(0).replaceAll(" ", "").toLowerCase())
+                                        ||item.equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                            Get(Item, value);
+                            return;
+                        }
+                    }
+                    break;
+                case "инвентарь":
+                    Console.Println("Инвентарь:"
+                            + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass())
+                            + ")\n" + Player().Inventory().toString(Player().Hands()));
+                    Console.Println(Player().Inventory().toString(Player().Backpack()));
+                    Console.Println(Player().Inventory().toString(Player().Pouch()));
+                    Console.Println(Player().Inventory().toString(Player().Torso()));
+                    Console.Println(Player().Inventory().toString(Player().Pants()));
+                    break;
+                case "профиль":
+                    Console.Println(Player().toString());
+            }
+        } catch (NullPointerException ignored) {
         }
-        Save();
-        ReadCommand();
+
     }
 
-    private void Get(Item item, ArrayList<String> messages, int id) {
-        try {
-            Player().Inventory().AddItem(new Slot(item, Integer.parseInt(messages.get(id))));
-        } catch (IndexOutOfBoundsException | NumberFormatException e) {
-            Player().Inventory().AddItem(new Slot(item, 1));
+    String percent(float str) {
+        return String.format("%.2f", str);
+    }
+
+    private void Use(Item item) {
+        switch (item.Type()) {
+            case food:
+                Eat(item);
+                break;
+            case armor:
+                break;
         }
+    }
+
+    private void Get(Item item, int value) {
+        Player().Inventory().AddItem(new Slot(item, value));
     }
 
     void Player(Player player) {
