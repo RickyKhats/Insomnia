@@ -1,5 +1,6 @@
 package com.uweeldteam.game.player.inventory.craftsystem;
 
+import com.uweeldteam.Engine;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
@@ -40,7 +41,7 @@ public class CraftSystem {
             if (canCraft(item.Craft().get(i).Items())) {
                 Player().Inventory().DeleteItems(item.Craft(i));
                 Player().Inventory().AddItem(new Slot(item, (short) 1), false);
-                Console.Println("Вы скрафтили " + item.Names(0).toLowerCase());
+                Engine.Println("Вы скрафтили " + item.Names(0).toLowerCase());
                 return;
             }
         }
@@ -51,7 +52,7 @@ public class CraftSystem {
                 e.printStackTrace();
             }
         else
-            Console.Println("Недостаточно ресурсов");
+            Engine.Println("Недостаточно ресурсов");
     }
 
     public static boolean canCraft(Item item) {

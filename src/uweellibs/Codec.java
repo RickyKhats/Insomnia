@@ -1,7 +1,7 @@
 package uweellibs;
 
 public class Codec {
-    final static String[] ru = {
+    public final static String[] ru = {
             "а", "б", "в", "г", "д",
             "е", "ё", "ж", "з", "и",
             "й", "к", "л", "м", "н",
@@ -10,7 +10,7 @@ public class Codec {
             "ш", "щ", "ь", "ы", "ъ",
             "э", "ю", "я"
     };
-    final static String[] RU = {
+    public final static String[] RU = {
             "А", "Б", "В", "Г", "Д",
             "Е", "Ё", "Ж", "З", "И",
             "Й", "К", "Л", "М", "Н",
@@ -19,7 +19,7 @@ public class Codec {
             "Ш", "Щ", "Ь", "Ы", "Ъ",
             "Э", "Ю", "Я"
     };
-    final static String[] en = {
+    public final static String[] en = {
             "a", "b", "c", "d",
             "e", "f", "g", "h",
             "i", "j", "k", "l",
@@ -28,7 +28,7 @@ public class Codec {
             "u", "v", "w", "x",
             "y", "z"
     };
-    final static String[] EN = {
+    public final static String[] EN = {
             "A", "B", "C", "D",
             "E", "F", "G", "H",
             "I", "J", "K", "L",
@@ -38,9 +38,9 @@ public class Codec {
             "Y", "Z"
     };
 
-    final static char quote = '"';
+    public final static char quote = '"';
 
-    final static String space = " ";
+    public final static String space = " ";
 
     final static String[] codes_RU = {
             "99992", "98983", "97974", "96965", "69696",
@@ -81,7 +81,7 @@ public class Codec {
             "1110", "1109", "1098", "1099", "1100",
             "1066"
     };
-    final static String[] integers = {
+    public final static String[] integers = {
             "1", "2", "3", "4", "5",
             "6", "7", "8", "9", "0",
     };

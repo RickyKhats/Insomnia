@@ -1,5 +1,7 @@
 package com.uweeldteam.game;
 
+import com.uweeldteam.Engine;
+import com.uweeldteam.GameState;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 
 public class Game extends MonoBehaviour {
     public static boolean canAction = true;
+    public static GameState gameState = GameState.normal;
+    public Game fight;
     Player player;
 
     public Game() {
@@ -54,17 +58,9 @@ public class Game extends MonoBehaviour {
             Player().Stats().satiety = 3;
     }
 
-    public void PostUpdate() {
-        if (canAction) {
-            ReadCommand();
-            Save();
-        }
-    }
-
-    public void ReadCommand() {
+    public void ReadCommand(String message) {
         CountHunger();
         try {
-            String message = Console.Read().toLowerCase().replace(" {2}", " ");
             ArrayList<String> messages = new ArrayList<>();
             int id = 0;
             for (int i = 0; i < message.length(); i++) {
@@ -80,7 +76,7 @@ public class Game extends MonoBehaviour {
                 }
             }
             if (messages.isEmpty())
-                Console.Println("Message is empty");
+                Engine.Println("Message is empty");
             else
                 ReadCommand(messages);
         } catch (Exception e) {
@@ -105,7 +101,7 @@ public class Game extends MonoBehaviour {
                                 Player().Inventory().DeleteItems(Item);
                                 Use(Item);
                             } else
-                                Console.Println("У вас нет такого предмета.");
+                                Engine.Println("У вас нет такого предмета.");
                         }
                     }
                 case "получить":
@@ -140,10 +136,10 @@ public class Game extends MonoBehaviour {
                     }
                     break;
                 case "инвентарь":
-                    Console.Println(Player().Inventory().toString());
+                    Engine.Println(Player().Inventory().toString());
                     break;
                 case "профиль":
-                    Console.Println(Player().toString());
+                    Engine.Println(Player().toString());
             }
         } catch (NullPointerException ignored) {
         }
@@ -173,9 +169,9 @@ public class Game extends MonoBehaviour {
     }
 
     public void Save() {
-        Console.Println("Saving...");
+        Engine.Println("Saving...");
         PlayerPrefs.SetObject("Game", this);
-        Console.Println(Json.ToJson(Player()));
-        Console.Println("Save completed!");
+        Engine.Println(Json.ToJson(Player()));
+        Engine.Println("Save completed!");
     }
 }

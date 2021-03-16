@@ -1,5 +1,7 @@
 package com.uweeldteam.game.fight;
 
+import com.uweeldteam.Engine;
+import com.uweeldteam.GameState;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.Game;
 import com.uweeldteam.game.mob.Mob;
@@ -31,23 +33,22 @@ public class Fight {
         Player().Stats().health -= damage;
 
         if (damage == 0) {
-            Console.Println(enemy.names[0] + " не атаковал вас.");
+            Engine.Println(enemy.names[0] + " не атаковал вас.");
         } else if (damage < 5) {
-            Console.Println(enemy.names[0] + " почти не нанёс вам увечий.");
+            Engine.Println(enemy.names[0] + " почти не нанёс вам увечий.");
         } else if (damage < 10) {
-            Console.Println(enemy.names[0] + " нанёс вам лёгкие увечия.");
+            Engine.Println(enemy.names[0] + " нанёс вам лёгкие увечия.");
         } else if (damage < 25) {
-            Console.Println(enemy.names[0] + " нанёс вам увечия.");
+            Engine.Println(enemy.names[0] + " нанёс вам увечия.");
         } else {
-            Console.Println(enemy.names[0] + " нанёс вам сильные увечия.");
+            Engine.Println(enemy.names[0] + " нанёс вам сильные увечия.");
         }
         if (Player().Stats().health <= 0) {
             Player().Death();
             return;
         }
-        Console.Println("Здоровье " + Player().Stats().name
+        Engine.Println("Здоровье " + Player().Stats().name
                 + String.format(" %.2f", Player().Stats().health));
-        ReadCommand();
     }
 
     private static void PlayerAttack() {
@@ -55,22 +56,21 @@ public class Fight {
         float damage = BlockEnemy(Random.Range(enemy.damage));
         enemy.health -= damage;
         if (damage < 5)
-            Console.Println("Вы не нанесли " + enemy.names[2].toLowerCase() + " особых увечий.");
+            Engine.Println("Вы не нанесли " + enemy.names[2].toLowerCase() + " особых увечий.");
         else if (damage < 10)
-            Console.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " лёгкие увечия.");
+            Engine.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " лёгкие увечия.");
         else if (damage < 25)
-            Console.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " увечия.");
+            Engine.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " увечия.");
         else
-            Console.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " сильные увечия.");
+            Engine.Println("Вы нанесли " + enemy.names[2].toLowerCase() + " сильные увечия.");
         if (enemy.health <= 0) {
-            Console.Println("Поздравляем, вы победили " + enemy.names[1].toLowerCase());
+            Engine.Println("Поздравляем, вы победили " + enemy.names[1].toLowerCase());
             for (int i = 0; i < enemy.drop.length; i++)
                 Player().Inventory().AddItem(new Slot(enemy.drop[i], 1));
-            Game.canAction = true;
-            Main.Engine().Game().ReadCommand();
+            Game.gameState = GameState.normal;
             return;
         }
-        Console.Println("Здоровье противника: " +
+        Engine.Println("Здоровье противника: " +
                 String.format("%.2f", enemy.health) +
                 "Энергия: " + energy);
         EnemyAttack();
@@ -95,44 +95,41 @@ public class Fight {
         if (enemy == null)
             throw new IllegalStateException("Enemy is not be null!");
         enemy.health = mob.standardHealth;
-        Console.Println("Противник: " + enemy.names[0].toLowerCase()
+        Engine.Println("Противник: " + enemy.names[0].toLowerCase()
                 + "\nЗдоровье - " + String.format("%.2f", enemy.health));
         Help();
-        ReadCommand();
+        Game.gameState = GameState.fight;
     }
 
-    private static void ReadCommand() {
-        switch (Console.Read().toLowerCase()) {
+    private static void ReadCommand(String text) {
+        switch (text) {
             case "атаковать":
                 if (energy >= 1)
                     PlayerAttack();
                 else {
-                    Console.Println("У вас недостаточно энергии.");
-                    ReadCommand();
+                    Engine.Println("У вас недостаточно энергии.");
                 }
                 break;
             case "прикрыться":
                 Block();
             default:
-                Console.Println("Такой команды не существует");
-                ReadCommand();
+                Engine.Println("Такой команды не существует");
         }
     }
 
     private static void Block() {
         if (Random.Percent(36)) {
-            Console.Println("Вы успешно прикрылись от удара противника.");
+            Engine.Println("Вы успешно прикрылись от удара противника.");
             energy += 4;
-            ReadCommand();
         } else {
-            Console.Println("Вам не удалось прикрыться от удара противника.");
+            Engine.Println("Вам не удалось прикрыться от удара противника.");
             energy += 3;
             EnemyAttack();
         }
     }
 
     private void Help() {
-        Console.Println("Команды:" +
+        Engine.Println("Команды:" +
                 "\nАтаковать - атака противника основным/запасным оружием на выбор." +
                 "\nБлокировать - заблокировать удар противника и восстановить немного сил." +
                 "\nЛечиться - использовать один из расходников в руках или подсумке.");

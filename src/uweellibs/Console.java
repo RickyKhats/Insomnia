@@ -43,7 +43,7 @@ public class Console {
                 System.out.print("> " + Text.replaceAll("\n", "\n> "));
     }
 
-    private static boolean endsWithForbiddenCharacter(String text) {
+    public static boolean endsWithForbiddenCharacter(String text) {
         for (String forbiddenCharacter : forbiddenCharacters)
             if (text.endsWith(forbiddenCharacter))
                 return true;

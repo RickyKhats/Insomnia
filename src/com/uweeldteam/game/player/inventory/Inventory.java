@@ -1,5 +1,6 @@
 package com.uweeldteam.game.player.inventory;
 
+import com.uweeldteam.Engine;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -90,7 +91,7 @@ public class Inventory {
                 return;
             }
         }
-        Console.Println("End.");
+        Engine.Println("End.");
     }
 
     public void AddItem(Slot slot, boolean showMessage) {
@@ -112,7 +113,7 @@ public class Inventory {
             for (int i = 0; i < Hands().slots.size(); i++) {
                 if (remains.Value() == 0) break;
                 if (Player().AllHandsMass() + remains.Item().Mass() > Player().MaxHandsMass()) {
-                    Console.Println("Ваши руки не выдержат столько веса");
+                    Engine.Println("Ваши руки не выдержат столько веса");
                     break;
                 } else {
                     int f = FindFirstAvailableSlot(remains, Hands().slots);
@@ -126,7 +127,7 @@ public class Inventory {
             if (remains.Value() == 0) break;
             if (container.AllMass() + remains.Item().Mass() > container.MaxMass()) {
                 if (container != nullItem)
-                    Console.Println("Ваш " + container.Names(0).toLowerCase() + " не выдержит столько веса");
+                    Engine.Println("Ваш " + container.Names(0).toLowerCase() + " не выдержит столько веса");
                 else
                     break;
             }
@@ -140,11 +141,11 @@ public class Inventory {
             if (remains.Value() != slot.Value()) {
                 Pickup(remains, got + slot.Value() - remains.Value(), showMessage, false);
             } else
-                Console.Println("Недостаточно места на " + remains.Item().Names(1).toLowerCase() + ((remains.Value() > 1) ? " X" + remains.Value() : "."));
+                Engine.Println("Недостаточно места на " + remains.Item().Names(1).toLowerCase() + ((remains.Value() > 1) ? " X" + remains.Value() : "."));
         } else {
             int gotten = slot.Value() + remains.Value();
             if (showMessage)
-                Console.Println("Вы получили " + remains.Item().Names(1).toLowerCase() + (gotten + got > 1 ? " X" + (gotten + got) : ""));
+                Engine.Println("Вы получили " + remains.Item().Names(1).toLowerCase() + (gotten + got > 1 ? " X" + (gotten + got) : ""));
         }
     }
 
