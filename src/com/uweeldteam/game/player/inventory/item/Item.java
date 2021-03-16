@@ -6,19 +6,26 @@ import uweellibs.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public enum Item {
     nullItem(4.4f, 0, "Пусто", "Отсутствует"),
     bottle(0.1f, 4, "Бутылка", "Бутылку"),
-    bottledWater(1.1f,  4, new Range(0, 0), new Range(1,5), new Range(0,0), new Range(0, 2), new Craft(bottle), "Бутылка с водой", "Бутылку с водой"),
+    bottledWater(1.1f,  4, new Range(0, 0), new Range(1,5), new Range(0,0), new Range(0, 2), new ArrayList<>(Collections.singletonList(new Craft(bottle))), "Бутылка с водой", "Бутылку с водой"),
+    wool(0.1f, 4, "Шерсть", "Шерсть"),
+    cotton(0.1f, 4, "Хлопок", "Хлопок"),
+    fabric(0.1f, 4, new ArrayList<>(List.of(new Craft(wool), new Craft(cotton, cotton))), "Ткань", "Ткань"),
     wood(4.4f, 4, "Бревно", "Бревно"),
     ironBar(4.4f, 1, "Железный слиток", "Железный слиток"),
-    redIronStone(0.1f, 0.2f, 3, ironBar, "Красный железняк", "Красный железняк"),
-    ironOre(1, 0.2f, 3, ironBar, "Железная руда", "Железную руду"),
-    ironPickaxe(4.6f, new Range(10, 50), new Craft(wood, ironBar), "Железная кирка", "Железную кирку"),
-    ironAxe(4.4f, new Range(10, 40), new Craft(wood, ironBar), "Железный топор", "Железный топор"),
+    redIronStone(70, 0.5f, 3, ironBar, "Красный железняк", "Красный железняк"),
+    brownIronStone(35, 0.035f, 3, ironBar, "Бурый железняк", "Бурый железняк"),
+    magnetIronStone(31.03f, 0.050f, 3, ironBar, "Магнетит", "Магнетит"),
+    ironPickaxe(4.6f, new Range(10, 50), new ArrayList<>(Collections.singletonList(new Craft(wood, ironBar))), "Железная кирка", "Железную кирку"),
+    ironAxe(4.4f, new Range(10, 40), new ArrayList<>(Collections.singletonList(new Craft(wood, ironBar))), "Железный топор", "Железный топор"),
     smallAllowance(2.1f, 2, new Range(10, 40), new Range(10, 40), new Range(0, 2), new Range(0, 1), "Маленький паёк", "Маленький паёк"),
-    backpack(4f, 1f, (byte) 5, (short) 25, "Рюкзак", "Рюкзак"),
+    schoolBackpack(4f, new Range(0, 1), (byte) 5, (short) 25, "Школьный рюкзак", "Школьный рюкзак"),
+    fabricBackpack(4f, new Range(0, 2), (byte) 7, (short) 30, new ArrayList<>(Collections.singletonList(new Craft(fabric))), "Тканевый рюкзак", "Тканевый рюкзак"),
     ironKnife(1.2f, new Range(5, 17), "Нож", "Нож");
 
     ArrayList<String> names = new ArrayList<>();
@@ -26,13 +33,12 @@ public enum Item {
     float mass = 0;
     private float maxMass = 0;
     short maxStack = 1;
-    private Craft craft = new Craft();
+    ArrayList<Craft> craft = new ArrayList<>();
     private Range food = new Range(0, 0);
     private Range satiety = new Range(0, 0);
     private Range water = new Range(0, 0);
     private Range drunkenness = new Range(0, 0);
     ArrayList<Slot> slots = new ArrayList<>();
-    OreType oreType;
     Item bar;
     Range damage = new Range(1, 6);
     Range defence = new Range(1, 5);
@@ -46,7 +52,7 @@ public enum Item {
         MaxStack((short) maxStack);
     }
     //standard item with craft
-    Item(float mass, int maxStack, Craft craft, String... names) {
+    Item(float mass, int maxStack, ArrayList<Craft> craft, String... names) {
         Type(ItemType.item);
         Names(names);
         Mass(mass);
@@ -61,7 +67,7 @@ public enum Item {
         Names(names);
     }
     //weapon with craft
-    Item(float mass, Range damage, Craft craft, String... names) {
+    Item(float mass, Range damage, ArrayList<Craft> craft, String... names) {
         Type(ItemType.weapon);
         Mass(mass);
         Damage(damage);
@@ -69,7 +75,7 @@ public enum Item {
         Craft(craft);
     }
     //backpack
-    Item(float mass, float Range, byte slots, short maxMass, String... names) {
+    Item(float mass, Range defence, byte slots, short maxMass, String... names) {
         Type(ItemType.backpack);
         MaxStack((short) 1);
         Mass(mass);
@@ -79,7 +85,7 @@ public enum Item {
         Names(names);
     }
     //backpack with craft
-    Item(float mass, Range defence, byte slots, short maxMass, Craft craft, String... names) {
+    Item(float mass, Range defence, byte slots, short maxMass, ArrayList<Craft> craft, String... names) {
         Type(ItemType.backpack);
         MaxStack((short) 1);
         Mass(mass);
@@ -101,7 +107,7 @@ public enum Item {
         Names(names);
     }
     //food with craft
-    Item(float mass, int maxStack, Range food, Range water, Range satiety, Range drunkenness, Craft craft, String... names) {
+    Item(float mass, int maxStack, Range food, Range water, Range satiety, Range drunkenness, ArrayList<Craft> craft, String... names) {
         Type(ItemType.food);
         Mass(mass);
         Food(food);
@@ -201,17 +207,13 @@ public enum Item {
         this.type = type;
     }
 
-    public OreType OreType() {
-        return this.oreType;
+    public Item[] Craft(int id) {
+        return craft.get(id).Items();
     }
-    public void OreType(OreType oreType) {
-        this.oreType = oreType;
+    public ArrayList<Craft> Craft() {
+        return craft;
     }
-
-    public Item[] Craft() {
-        return craft.Items();
-    }
-    private void Craft(Craft craft) {
+    private void Craft(ArrayList<Craft> craft) {
         this.craft = craft;
     }
 
@@ -248,5 +250,9 @@ public enum Item {
     }
     public void Satiety(Range satiety) {
         this.satiety = satiety;
+    }
+
+    public enum ItemType {
+        backpack, weapon, food, item, armorBackpack, armor, pouch, firstWeapon, secondWeapon, ore
     }
 }

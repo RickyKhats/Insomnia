@@ -3,7 +3,6 @@ package com.uweeldteam.game.player;
 import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.item.Item;
-import com.uweeldteam.game.player.inventory.item.ItemType;
 import uweellibs.*;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class Player extends MonoBehaviour {
         Console.Println("Поздравляем, вы мертвы!");
     }
 
-    public class Stats {
+    public static class Stats {
         public String name = "Ricky Khats";
         public float
                 health = 100,
@@ -74,7 +73,7 @@ public class Player extends MonoBehaviour {
 
     //equipment
     private Item
-            backpack = Item.backpack,
+            backpack = fabricBackpack,
             pants = nullItem,
             torso = nullItem,
             firstWeapon = ironAxe,
@@ -87,7 +86,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void Backpack(Item item) {
-        if (item.Type() == ItemType.backpack)
+        if (item.Type() == Item.ItemType.backpack)
             this.backpack = item;
         else
             try {
@@ -102,7 +101,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void Pants(Item item) {
-        if (item.Type() == ItemType.armor || item.Type() == ItemType.armorBackpack)
+        if (item.Type() == Item.ItemType.armor || item.Type() == Item.ItemType.armorBackpack)
             this.pants = item;
         else
             try {
@@ -117,7 +116,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void Torso(Item item) {
-        if (item.Type() == ItemType.armor || item.Type() == ItemType.armorBackpack)
+        if (item.Type() == Item.ItemType.armor || item.Type() == Item.ItemType.armorBackpack)
             this.torso = item;
         else
             try {
@@ -132,7 +131,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void Pouch(Item item) {
-        if (item.Type() == ItemType.pouch)
+        if (item.Type() == Item.ItemType.pouch)
             this.pouch = item;
         else
             try {
@@ -147,7 +146,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void FirstWeapon(Item item) {
-        if (item.Type() == ItemType.firstWeapon)
+        if (item.Type() == Item.ItemType.firstWeapon)
             this.firstWeapon = item;
         else
             try {
@@ -162,7 +161,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void SecondWeapon(Item item) {
-        if (item.Type() == ItemType.secondWeapon)
+        if (item.Type() == Item.ItemType.secondWeapon)
             this.secondWeapon = item;
         else
             try {

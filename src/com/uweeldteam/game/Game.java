@@ -1,19 +1,13 @@
 package com.uweeldteam.game;
 
-import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
-import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
-import com.uweeldteam.game.player.inventory.item.ItemType;
 import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
 import java.util.ArrayList;
-import java.util.Locale;
-
-import static com.uweeldteam.game.player.inventory.item.Item.*;
 
 public class Game extends MonoBehaviour {
     public static boolean canAction = true;
@@ -41,7 +35,7 @@ public class Game extends MonoBehaviour {
     }
 
     void Eat(@NotNull Item food) {
-        if (food.Type() != ItemType.food)
+        if (food.Type() != Item.ItemType.food)
             throw new IllegalArgumentException("Item is not food!");
         Player().Stats().food += Random.Range(food.Food());
         Player().Stats().water += Random.Range(food.Water());
@@ -125,6 +119,19 @@ public class Game extends MonoBehaviour {
                                 item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase())
                                         || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
                             Get(Item, value);
+                            return;
+                        }
+                    }
+                    break;
+                case "скрафтить":
+                    for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
+                        StringBuilder item = new StringBuilder();
+                        for (int j = 1; j < messages.size(); j++) {
+                            item.append(messages.get(j));
+                        }
+                        Item Item = Player().Inventory().AllItems()[i];
+                        if (item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase()) || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                            CraftSystem.Craft(Item);
                             return;
                         }
                     }

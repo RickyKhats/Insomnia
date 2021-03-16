@@ -2,8 +2,10 @@ package com.uweeldteam.game.player.inventory;
 
 import com.uweeldteam.game.player.inventory.item.Item;
 
+import static com.uweeldteam.game.player.inventory.item.Item.nullItem;
+
 public class Slot {
-    private Item item = Item.nullItem;
+    private Item item = nullItem;
     private short value = 0;
 
     public Slot(Item item, int value) {
@@ -15,52 +17,55 @@ public class Slot {
 
     }
 
-    public float getAllMass(){
+    public float getAllMass() {
         return item.Mass() * value;
     }
 
-    public void Value(short value){
+    public void Value(short value) {
         this.value = value;
     }
-    public short Value(){
+
+    public short Value() {
         return value;
     }
-    public Item Item(){
+
+    public Item Item() {
         return item;
     }
-    public void Item(Item item){
+
+    public void Item(Item item) {
         this.item = item;
     }
-    public Slot Add(Slot slot){
-        if(slot.Value() < 0)
+
+    public Slot Add(Slot slot) {
+        if (slot.Value() < 0)
             throw new IllegalArgumentException();
 
         Slot result = new Slot(slot.Item(), (short) 0);
-        if(Item() != slot.Item() && Item() != Item.nullItem)
+        if (Item() != slot.Item() && Item() != nullItem)
             throw new IllegalArgumentException();
         else
             Item(slot.Item());
-        if(Value() + slot.Value() > Item().MaxStack()) {
+        if (Value() + slot.Value() > Item().MaxStack()) {
             result.Value((short) (Value() + slot.Value() - Item().MaxStack()));
             Value(Item().MaxStack());
-        }
-        else {
+        } else {
             Value((short) (Value() + slot.Value()));
             result.Value((short) 0
             );
         }
         return result;
     }
-    public void Remove(Slot slot){
+
+    public void Remove(Slot slot) {
         value -= slot.Value();
-        if(value < 1)
-            item = Item.nullItem;
+        if (value < 1)
+            item = nullItem;
         if (value < 0)
             throw new IllegalStateException("Value is not correct!");
     }
-    public String toString(){
-        if(item != null)
+
+    public String toString() {
         return Item().Names(0) + (Value() > 1 ? " X" + Value() : "");
-        return "Пусто";
     }
 }

@@ -35,12 +35,15 @@ public class CraftSystem {
     }
 
     public static void Craft(Item item) {
-        if (canCraft(item)) {
-            Console.Println("Вы скрафтили " + item.Names(0).toLowerCase());
-            Player().Inventory().AddItem(new Slot(item, (short) 1), false);
-            Player().Inventory().DeleteItems(item.Craft());
-            Console.Println("end");
-        } else if (item.Craft().length < 1)
+        for (int i = 0; i < item.Craft().size(); i++) {
+            if (canCraft(item.Craft().get(i).Items())) {
+                Player().Inventory().DeleteItems(item.Craft(i));
+                Player().Inventory().AddItem(new Slot(item, (short) 1), true);
+                Console.Println("Вы скрафтили " + item.Names(0).toLowerCase());
+                return;
+            }
+        }
+        if (item.Craft().size() < 1)
             try {
                 throw new Exception("this item not have craft");
             } catch (Exception e) {
@@ -51,8 +54,9 @@ public class CraftSystem {
     }
 
     public static boolean canCraft(Item item) {
-        if (!Arrays.asList(item).isEmpty())
-            return canCraft(item.Craft());
+        for (int i = 0; i < item.Craft().size(); i++) {
+            if (canCraft(item.Craft(i))) return true;
+        }
         return false;
 
     }
