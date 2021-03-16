@@ -89,7 +89,7 @@ public class Game extends MonoBehaviour {
     }
 
     private void ReadCommand(ArrayList<String> messages) {
-        if(Player() == null)
+        if (Player() == null)
             throw new IllegalStateException();
         try {
             switch (messages.get(0)) {
@@ -120,9 +120,7 @@ public class Game extends MonoBehaviour {
                             }
                         }
                         Item Item = Player().Inventory().AllItems()[i];
-                        if (
-                                item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase())
-                                        || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                        if (item.toString().equals(Item.Names(0).replaceAll(" ", "").toLowerCase()) || item.toString().equals(Item.Names(1).replaceAll(" ", "").toLowerCase())) {
                             Get(Item, value);
                             return;
                         }
@@ -142,11 +140,7 @@ public class Game extends MonoBehaviour {
                     }
                     break;
                 case "инвентарь":
-                    Console.Println("Инвентарь:" + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n" + Player().Inventory().toString(Player().Hands()));
-                    Console.Println(Player().Inventory().toString(Player().Backpack()));
-                    Console.Println(Player().Inventory().toString(Player().Pouch()));
-                    Console.Println(Player().Inventory().toString(Player().Torso()));
-                    Console.Println(Player().Inventory().toString(Player().Pants()));
+                    Console.Println(Player().Inventory().toString());
                     break;
                 case "профиль":
                     Console.Println(Player().toString());
@@ -154,10 +148,6 @@ public class Game extends MonoBehaviour {
         } catch (NullPointerException ignored) {
         }
 
-    }
-
-    String percent(float str) {
-        return String.format("%.2f", str);
     }
 
     private void Use(Item item) {

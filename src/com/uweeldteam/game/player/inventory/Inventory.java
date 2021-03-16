@@ -5,7 +5,6 @@ import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
 import uweellibs.Console;
 
-import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -169,6 +168,10 @@ public class Inventory {
         return firstFree;
     }
 
+    String percent(float str) {
+        return String.format("%.2f", str);
+    }
+
     public String toString(ArrayList<Slot> slots) {
         StringBuilder returns = new StringBuilder();
         int id = 1;
@@ -177,6 +180,15 @@ public class Inventory {
             id++;
         }
         return returns.toString();
+    }
+
+    public String toString() {
+        String result = ("Инвентарь:" + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n" + Player().Inventory().toString(Player().Hands()));
+        result += (Player().Inventory().toString(Player().Backpack()));
+        result += (Player().Inventory().toString(Player().Pouch()));
+        result += (Player().Inventory().toString(Player().Torso()));
+        result += (Player().Inventory().toString(Player().Pants()));
+        return result;
     }
 
     public String toString(Item item) {
