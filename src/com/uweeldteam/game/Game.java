@@ -37,6 +37,7 @@ public class Game extends MonoBehaviour {
     void Eat(@NotNull Item food) {
         if (food.Type() != Item.ItemType.food)
             throw new IllegalArgumentException("Item is not food!");
+        Player().Inventory().DeleteItems(food);
         Player().Stats().food += Random.Range(food.Food());
         Player().Stats().water += Random.Range(food.Water());
         Player().Stats().satiety += Random.Range(food.Satiety());
@@ -54,8 +55,10 @@ public class Game extends MonoBehaviour {
     }
 
     public void PostUpdate() {
-        if (canAction)
+        if (canAction) {
             ReadCommand();
+            Save();
+        }
     }
 
     public void ReadCommand() {
@@ -86,6 +89,8 @@ public class Game extends MonoBehaviour {
     }
 
     private void ReadCommand(ArrayList<String> messages) {
+        if(Player() == null)
+            throw new IllegalStateException();
         try {
             switch (messages.get(0)) {
                 case "использовать":
@@ -137,9 +142,7 @@ public class Game extends MonoBehaviour {
                     }
                     break;
                 case "инвентарь":
-                    Console.Println("Инвентарь:"
-                            + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass())
-                            + ")\n" + Player().Inventory().toString(Player().Hands()));
+                    Console.Println("Инвентарь:" + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n" + Player().Inventory().toString(Player().Hands()));
                     Console.Println(Player().Inventory().toString(Player().Backpack()));
                     Console.Println(Player().Inventory().toString(Player().Pouch()));
                     Console.Println(Player().Inventory().toString(Player().Torso()));

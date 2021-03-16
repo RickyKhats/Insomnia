@@ -19,8 +19,8 @@ public class Inventory {
     }
 
     static class Container {
-        ArrayList<Slot> slots;
-        Item item;
+        public ArrayList<Slot> slots;
+        public Item item;
 
         public Container(Item container) {
             slots = container.Slots();
@@ -74,19 +74,17 @@ public class Inventory {
         }
         boolean touched = false;
         for (ArrayList<Slot> container : containers) {
-            for (int i = 0; i < container.size(); i++) {
-                for (int ii = 0; ii < craft.size(); ii++)
+            for (Slot slot : container) {
+                for (Item item : craft)
                     try {
-                        Console.Println(container + " " + i + " " + ii);
-                        Console.Println(craft.get(ii));
-                        if (container.get(i).Item() == craft.get(ii)) {
-                            container.get(i).Remove(new Slot(craft.get(ii), (short) 0));
+                        if (slot.Item() == item) {
+                            slot.Remove(new Slot(item, (short) 0));
                             touched = true;
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
+                if (craft.isEmpty()) return true;
             }
-            if (craft.isEmpty()) return true;
         }
         if (!craft.isEmpty()) {
             if (!touched) {
@@ -117,6 +115,7 @@ public class Inventory {
                 if (remains.Value() == 0) break;
                 if (Player().AllHandsMass() + remains.Item().Mass() > Player().MaxHandsMass()) {
                     Console.Println("Ваши руки не выдержат столько веса");
+                    break;
                 } else {
                     int f = FindFirstAvailableSlot(remains, Hands().slots);
                     try {

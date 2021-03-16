@@ -51,8 +51,7 @@ public class Slot {
             Value(Item().MaxStack());
         } else {
             Value((short) (Value() + slot.Value()));
-            result.Value((short) 0
-            );
+            result.Value((short) 0);
         }
         return result;
     }

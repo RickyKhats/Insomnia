@@ -9,6 +9,7 @@ import uweellibs.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@SuppressWarnings("unchecked")
 public class CraftSystem {
     static ArrayList<Slot> Hands() {
         return Player().Hands();
@@ -38,7 +39,7 @@ public class CraftSystem {
         for (int i = 0; i < item.Craft().size(); i++) {
             if (canCraft(item.Craft().get(i).Items())) {
                 Player().Inventory().DeleteItems(item.Craft(i));
-                Player().Inventory().AddItem(new Slot(item, (short) 1), true);
+                Player().Inventory().AddItem(new Slot(item, (short) 1), false);
                 Console.Println("Вы скрафтили " + item.Names(0).toLowerCase());
                 return;
             }
@@ -66,7 +67,7 @@ public class CraftSystem {
         ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
         ArrayList<Slot> slots = new ArrayList<>();
         for (Item item : craft) {
-            if (!slots.contains(item))
+            if (!slots.contains(new Slot(item, 1)))
                 slots.add(new Slot(item, (short) 1));
             else
                 for (Slot slot : slots)
@@ -116,7 +117,6 @@ public class CraftSystem {
         if (!craft.isEmpty()) {
             if (!touched)
                 return false;
-            Item[] items1;
             items = craft.toArray(new Item[0]);
             return canCraft(items);
         }
