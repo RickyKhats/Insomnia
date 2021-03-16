@@ -65,7 +65,7 @@ public class Inventory {
         return containers;
     }
 
-    public boolean DeleteItems(Item... items) {
+    public void DeleteItems(Item... items) {
         ArrayList<Item> craft = new ArrayList<>(Arrays.asList(items));
         ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
         for (int i = 0; i < containers().size(); i++) {
@@ -82,16 +82,15 @@ public class Inventory {
                         }
                     } catch (IndexOutOfBoundsException ignored) {
                     }
-                if (craft.isEmpty()) return true;
+                if (craft.isEmpty()) return;
             }
         }
         if (!craft.isEmpty()) {
             if (!touched) {
-                return true;
+                return;
             }
         }
         Console.Println("End.");
-        return false;
     }
 
     public void AddItem(Slot slot, boolean showMessage) {
