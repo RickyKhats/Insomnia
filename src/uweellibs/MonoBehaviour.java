@@ -9,11 +9,11 @@ public abstract class MonoBehaviour {
     //time to calls all updates
     public int localUpdateTime = Time.globalUpdateTime;
     //starts with program starts
-    public native void PreInit();
+    public synchronized native void PreInit();
     //starts with PreInit completed
-    public native void Init();
+    public synchronized native void Init();
     //starts with PreInit completed
-    public native void PostInit();
+    public synchronized native void PostInit();
     //starts on Init
     public native void Update();
     //starts on PostInit

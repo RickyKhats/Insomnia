@@ -65,6 +65,7 @@ public class Fight {
             Console.Println("Поздравляем, вы победили " + enemy.names[1].toLowerCase());
             for (int i = 0; i < enemy.drop.length; i++)
                 Player().Inventory().AddItem(new Slot(enemy.drop[i], 1));
+            Main.Engine().Game().ReadCommand();
             return;
         }
         Console.Println("Здоровье противника: " +
@@ -77,28 +78,35 @@ public class Fight {
         return Main.Engine().Game().Player();
     }
 
-    public Fight() {
+    public void Fight() {
         try {
-            new Fight(AllMobs().get(Random.Range(0, AllMobs().size())));
+            Fight(AllMobs().get(Random.Range(0, AllMobs().size())));
         } catch (IndexOutOfBoundsException ignored) {
-            new Fight();
+            Fight();
         }
     }
 
-    public Fight(Mob mob) {
+    public void Fight(Mob mob) {
+        energy = 15;
         enemy = mob;
         if (enemy == null)
             throw new IllegalStateException("Enemy is not be null!");
         enemy.health = mob.standardHealth;
         Console.Println("Противник: " + enemy.names[0].toLowerCase()
                 + "\nЗдоровье - " + String.format("%.2f", enemy.health));
+        Help();
         ReadCommand();
     }
 
     private static void ReadCommand() {
         switch (Console.Read().toLowerCase()) {
             case "атаковать":
-                PlayerAttack();
+                if (energy >= 1)
+                    PlayerAttack();
+                else {
+                    Console.Println("У вас недостаточно энергии.");
+                    ReadCommand();
+                }
                 break;
             case "прикрыться":
                 Block();
@@ -118,6 +126,12 @@ public class Fight {
             energy += 3;
             EnemyAttack();
         }
+    }
+    private void Help(){
+        Console.Println("Команды:" +
+                "\nАтаковать - атака противника основным/запасным оружием на выбор." +
+                "\nБлокировать - заблокировать удар противника и восстановить немного сил." +
+                "\nЛечиться - использовать один из расходников в руках или подсумке.");
     }
 
     private static float BlockPlayer(float damage, Mob mob) {

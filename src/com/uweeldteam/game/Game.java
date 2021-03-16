@@ -2,7 +2,6 @@ package com.uweeldteam.game;
 
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
-import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -19,6 +18,10 @@ public class Game extends MonoBehaviour {
 
     public Game() {
         Player(new Player());
+    }
+
+    public void PostInit() {
+        ReadCommand();
     }
 
     void CountHunger() {
@@ -41,17 +44,15 @@ public class Game extends MonoBehaviour {
     void Eat(@NotNull Item food) {
         if (food.Type() != ItemType.food)
             throw new IllegalArgumentException("Item is not food!");
-        Player().Stats().food -= Random.Range(food.Food());
-        Player().Stats().water -= Random.Range(food.Water());
-        Player().Stats().satiety -= Random.Range(food.Satiety());
-        Player().Stats().drunkenness -= Random.Range(food.Drunkenness());
+        Player().Stats().food += Random.Range(food.Food());
+        Player().Stats().water += Random.Range(food.Water());
+        Player().Stats().satiety += Random.Range(food.Satiety());
+        Player().Stats().drunkenness += Random.Range(food.Drunkenness());
         if (Player().Stats().food < 0) {
             Player().Stats().food = 0;
-            Player().Stats().health -= 0.9f;
         }
         if (Player().Stats().water < 0) {
             Player().Stats().water = 0;
-            Player().Stats().health -= 1.2f;
         }
         if (Player().Stats().satiety > 5)
             Player().Stats().satiety = 5;
@@ -60,6 +61,9 @@ public class Game extends MonoBehaviour {
     }
 
     public void PostUpdate() {
+
+    }
+    public void ReadCommand(){
         CountHunger();
         try {
             String message = Console.Read().toLowerCase().replace(" {2}", " ");
@@ -84,13 +88,12 @@ public class Game extends MonoBehaviour {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void ReadCommand(ArrayList<String> messages) {
         switch (messages.get(0)) {
             case "охота":
-                Fight fight = new Fight();
+                new Fight().Fight();
                 break;
             case "профиль":
                 Console.Println(Player().toString());
@@ -131,6 +134,7 @@ public class Game extends MonoBehaviour {
                                     break;
                                 default:
                                     Console.Println("Такого предмета не существует.");
+                                    break;
                             }
                         } catch (IndexOutOfBoundsException ignored) {
                             Console.Println("Такого предмета не существует.");
@@ -188,6 +192,7 @@ public class Game extends MonoBehaviour {
                 Console.Println("Такой команды не существует");
         }
         Save();
+        ReadCommand();
     }
 
     private void Get(Item item, ArrayList<String> messages, int id) {
