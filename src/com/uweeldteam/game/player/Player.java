@@ -38,7 +38,7 @@ public class Player extends MonoBehaviour {
     }
 
     public static class Stats {
-        public String name = "Ricky Khats";
+        public String name = "Tester";
         public float
                 health = 100,
                 food = 0,

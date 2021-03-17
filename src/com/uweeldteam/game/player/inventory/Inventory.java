@@ -176,7 +176,7 @@ public class Inventory {
         StringBuilder returns = new StringBuilder();
         int id = 1;
         for (Slot slot : slots) {
-            returns.append(id).append(": ").append(slot.toString()).append("\n");
+            returns.append(id).append(": ").append(slot.toString()).append(((id - 1 == slots.size()) ? "" : "\n"));
             id++;
         }
         return returns.toString();
@@ -184,10 +184,10 @@ public class Inventory {
 
     public String toString() {
         String result = ("Инвентарь:" + "\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n" + Player().Inventory().toString(Player().Hands()));
-        result += (Player().Inventory().toString(Player().Backpack()));
-        result += (Player().Inventory().toString(Player().Pouch()));
-        result += (Player().Inventory().toString(Player().Torso()));
-        result += (Player().Inventory().toString(Player().Pants()));
+        result += toString(Player().Backpack());
+        result += toString(Player().Pouch());
+        result += toString(Player().Torso());
+        result += toString(Player().Pants());
         return result;
     }
 
@@ -197,7 +197,8 @@ public class Inventory {
             returns = new StringBuilder(item.Names(0) + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + "): \n");
             int id = 1;
             for (Slot slot : item.Slots()) {
-                returns.append(id).append(": ").append(slot.Item().Names(0)).append(slot.Value() < 2 ? "" : " X" + slot.Value()).append("\n");
+                returns.append(id).append(": ").append(slot.Item().Names(0)).append(
+                        slot.Value() < 2 ? "" : " X" + slot.Value()).append(((id == item.Slots().size()) ? "" : "\n"));
                 id++;
             }
         }

@@ -90,6 +90,18 @@ public class Codec {
             "dfsan", "hdsfbBSV", "afxczhsdr", "Surwct", "uhSDFUW"
     };
 
+    public static String[] forbiddenCharacters = {
+            "!", "@", "#", "№",
+            "$", ";", "%", ":",
+            "^", "&", "?", "*",
+            "(", ")", "-", "_",
+            "]", "[", "=", "+",
+            "{", "}", "\\", "|",
+            ",", ".", "?", "/",
+            "<", ">", "\"", "'",
+            "`", "~"
+    };
+
     public static String EncodeString(String text) {
         String result = text;
         for (int i = 0; i < RU.length; i++) {

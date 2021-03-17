@@ -5,20 +5,6 @@ import java.util.Scanner;
 
 public class Console {
 
-    public static String[] forbiddenCharacters = {
-            "!", "@", "#", "№",
-            "$", ";", "%", ":",
-            "^", "&", "?", "*",
-            "(", ")", "-", "_",
-            "]", "[", "=", "+",
-            "{", "}", "\\", "|",
-            ",", ".", "?", "/",
-            "<", ">", "\"", "'",
-            "`", "~", "1", "2",
-            "3", "4", "5", "6",
-            "7", "8", "9", "0",
-    };
-
     public static void Println(Object... objects) {
         ArrayList<String> text = new ArrayList<>();
         for (Object object : objects)
@@ -44,7 +30,10 @@ public class Console {
     }
 
     public static boolean endsWithForbiddenCharacter(String text) {
-        for (String forbiddenCharacter : forbiddenCharacters)
+        for (String forbiddenCharacter : Codec.forbiddenCharacters)
+            if (text.endsWith(forbiddenCharacter))
+                return true;
+        for (String forbiddenCharacter : Codec.integers)
             if (text.endsWith(forbiddenCharacter))
                 return true;
         return false;

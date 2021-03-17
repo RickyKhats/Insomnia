@@ -6,6 +6,8 @@ import uweellibs.Console;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
@@ -45,8 +47,9 @@ public class Engine extends MonoBehaviour {
 
     static class ConsoleWindow {
         JFrame window = new JFrame();
+        JLabel console = new JLabel("<html>> </html>");
         JPanel background = new JPanel();
-        JLabel console = new JLabel("<html> </html>");
+        JScrollPane scroll;
         private String lastMessage = "", text = "";
 
         public ConsoleWindow(String title) {
@@ -56,13 +59,20 @@ public class Engine extends MonoBehaviour {
             } catch (FontFormatException | IOException e) {
                 e.printStackTrace();
             }
-            background.setBackground(Color.BLACK);
-            background.add(console);
+            scroll = new JScrollPane(console,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scroll.setBackground(Color.BLACK);
+            window.setLayout(new BorderLayout());
             background.setLayout(new BorderLayout());
+            scroll.setLayout(new ScrollPaneLayout());
+            window.setSize(600, 520);
+            background.setSize(window.getSize());
+            scroll.setSize(background.getWidth() - 15, background.getHeight() - 37);
+            console.setSize(scroll.getWidth(), scroll.getHeight());
+            scroll.getVerticalScrollBar().setValue((int) window.getAlignmentX());
+            background.add(scroll);
             window.setName(title);
             window.add(background);
-            window.setLayout(new BorderLayout());
-            window.setSize(600, 520);
             window.addKeyListener(new KeyListener() {
 
                 boolean CheckChar(char ch) {
@@ -71,8 +81,8 @@ public class Engine extends MonoBehaviour {
                             Arrays.asList(Codec.ru).contains(character)
                                     || Arrays.asList(Codec.en).contains(character)
                                     || Arrays.asList(Codec.integers).contains(character)
-                                    || character.equals(String.valueOf(Codec.quote))
-                                    || character.equals(Codec.space);
+                                    || Arrays.asList(Codec.forbiddenCharacters).contains(character)
+                                    || character.equals(String.valueOf(Codec.quote));
 
                 }
 
@@ -93,24 +103,27 @@ public class Engine extends MonoBehaviour {
                                         return;
                                     }
                                     Println("Вы мертвы, начните новую игру");
+                                    break;
+                                default:
+                                    throw new IllegalStateException();
                             }
                             Console.Println(lastMessage);
                             lastMessage = "";
+                            scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum() + 50);
                             break;
                         case KeyEvent.VK_BACK_SPACE:
                             if (lastMessage.length() > 0) {
-                                text = (text.length() > 0) ? text.substring(0, text.length() - 1) : "";
+                                text = text.substring(0, text.length() - 1);
                                 lastMessage = lastMessage.substring(0, lastMessage.length() - 1);
                             }
-                            console.setText("<html>" + text.replaceAll("\n", "<br>") + "</html>");
                             break;
                         case KeyEvent.VK_SPACE:
                             Print(" ");
+                            lastMessage += keyEvent.getKeyChar();
                         default:
                             if (CheckChar(keyEvent.getKeyChar())) {
                                 Print(keyEvent.getKeyChar());
                                 lastMessage += keyEvent.getKeyChar();
-                                window.setName(String.valueOf(keyEvent.getKeyChar()));
                             }
                     }
                 }
@@ -123,17 +136,40 @@ public class Engine extends MonoBehaviour {
 
                 }
             });
-            background.setBounds(0, 0, 100 * 100000, 100 * 100000);
-            console.setBounds(0, 0, 100 * 100000, 100 * 100000);
+            window.addComponentListener(new ComponentListener() {
+                public void componentResized(ComponentEvent e) {
+
+                }
+
+                public void componentHidden(ComponentEvent e) {
+
+                }
+
+                public void componentMoved(ComponentEvent e) {
+
+                }
+
+                public void componentShown(ComponentEvent e) {
+
+                }
+            });
             console.setHorizontalAlignment(SwingConstants.LEFT);
             console.setVerticalAlignment(SwingConstants.NORTH);
             window.setVisible(true);
             new Thread(() -> {
+                int times = 0;
                 do {
                     Time.Sleep(50);
-                    Update();
+                    times++;
+                    if (times > 10 && times < 20) {
+                        FormatText(text);
+                    } else {
+                        FormatText(text + "|");
+                    }
+                    if (times == 20)
+                        times = 0;
                 } while (true);
-            });
+            }).start();
         }
 
         public void Println(Object... objects) {
@@ -143,32 +179,21 @@ public class Engine extends MonoBehaviour {
                     if (!object.toString().replaceAll(" {2}", " ").equals(" "))
                         text.add(object.toString());
             for (String Text : text)
-                if (Console.endsWithForbiddenCharacter(Text))
-                    this.text += Text + ".\n";
-                else
-                    this.text += Text + "\n";
-            console.setText("<html>" + this.text.replaceAll("\n", "<br>") + "</html>");
+                this.text += Text + "\n";
+        }
+
+        void FormatText(String text) {
+            console.setText("<html>>&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
         }
 
         public void Print(Object... objects) {
             ArrayList<String> text = new ArrayList<>();
             for (Object object : objects)
                 if (!object.toString().equals(""))
-                    if (!object.toString().replaceAll(" {2}", " ").equals(" "))
-                        text.add(object.toString());
+                    text.add(object.toString());
             for (String Text : text)
-                if (Console.endsWithForbiddenCharacter(Text))
-                    this.text += Text + ".";
-                else
-                    this.text += Text;
-            console.setText("<html>" + this.text.replaceAll("\n", "<br>") + "</html>");
+                this.text += Text;
         }
-
-        public void Update() {
-            background.setBounds(0, 0, window.getWidth(), window.getHeight());
-            console.setBounds(0, 0, background.getWidth(), background.getHeight());
-        }
-
     }
 
     Game game;
