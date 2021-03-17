@@ -2,17 +2,17 @@ package com.uweeldteam;
 
 import com.uweeldteam.game.Game;
 import uweellibs.*;
+import uweellibs.Console;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
 public class Engine extends MonoBehaviour {
 
@@ -51,6 +51,11 @@ public class Engine extends MonoBehaviour {
 
         public ConsoleWindow(String title) {
             console.setForeground(Color.GREEN);
+            try {
+                console.setFont(Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 12f));
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
             background.setBackground(Color.BLACK);
             background.add(console);
             background.setLayout(new BorderLayout());

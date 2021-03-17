@@ -143,6 +143,7 @@ public class Game extends MonoBehaviour {
                     break;
                 case "профиль":
                     Engine.Println(Player().toString());
+                    break;
                 default:
                     Engine.Println(
                             "Такой комманды не существует." +
