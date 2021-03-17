@@ -101,7 +101,7 @@ public class Fight {
         Game.gameState = GameState.fight;
     }
 
-    private static void ReadCommand(String text) {
+    public static void ReadCommand(String text) {
         switch (text) {
             case "атаковать":
                 if (energy >= 1)

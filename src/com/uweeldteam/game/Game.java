@@ -2,6 +2,7 @@ package com.uweeldteam.game;
 
 import com.uweeldteam.Engine;
 import com.uweeldteam.GameState;
+import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class Game extends MonoBehaviour {
     public static boolean canAction = true;
     public static GameState gameState = GameState.normal;
-    public Game fight;
+    public Fight fight;
     Player player;
 
     public Game() {
@@ -89,6 +90,8 @@ public class Game extends MonoBehaviour {
             throw new IllegalStateException();
         try {
             switch (messages.get(0)) {
+                case "охота":
+                    fight = new Fight();
                 case "использовать":
                     for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
                         StringBuilder item = new StringBuilder();
@@ -140,6 +143,10 @@ public class Game extends MonoBehaviour {
                     break;
                 case "профиль":
                     Engine.Println(Player().toString());
+                default:
+                    Engine.Println(
+                            "Такой комманды не существует." +
+                            "\nЕсли вы не знаете комманды то их можно прочитать в \"Помощь->Комманды\"");
             }
         } catch (NullPointerException ignored) {
         }

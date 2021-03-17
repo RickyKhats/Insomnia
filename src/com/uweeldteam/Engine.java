@@ -34,8 +34,9 @@ public class Engine extends MonoBehaviour {
             window.setName(title);
             window.add(background);
             window.setLayout(new BorderLayout());
-            window.setSize(300, 300);
+            window.setSize(600, 520);
             window.addKeyListener(new KeyListener() {
+
                 boolean CheckChar(char ch) {
                     String character = String.valueOf(ch).toLowerCase();
                     return
@@ -64,17 +65,18 @@ public class Engine extends MonoBehaviour {
                             break;
                         case KeyEvent.VK_BACK_SPACE:
                             text = (text.length() > 0) ? text.substring(0, text.length() -1) : "" ;
+                            lastMessage = (lastMessage.length() > 0) ? lastMessage.substring(0, lastMessage.length() -1) : "" ;
                             console.setText("<html>" + text.replaceAll("\n", "<br>") + "</html>");
                             break;
                         case KeyEvent.VK_SPACE:
                             Print(" ");
                         default:
-                            if (CheckChar(keyEvent.getKeyChar()))
+                            if (CheckChar(keyEvent.getKeyChar())) {
                                 Print(keyEvent.getKeyChar());
+                                lastMessage += keyEvent.getKeyChar();
+                                window.setName(String.valueOf(keyEvent.getKeyChar()));
+                            }
                     }
-                    if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-
-                    } else lastMessage += keyEvent.getKeyChar();
                 }
 
                 public void keyTyped(KeyEvent keyEvent) {
@@ -85,8 +87,8 @@ public class Engine extends MonoBehaviour {
 
                 }
             });
-            background.setBounds(0, 0, window.getWidth(), window.getHeight());
-            console.setBounds(0, 0, window.getWidth(), window.getHeight());
+            background.setBounds(0, 0, 100*100000, 100*100000);
+            console.setBounds(0, 0, 100*100000, 100*100000);
             console.setHorizontalAlignment(SwingConstants.LEFT);
             console.setVerticalAlignment(SwingConstants.NORTH);
             window.setVisible(true);
