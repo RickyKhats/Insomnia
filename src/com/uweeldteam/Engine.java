@@ -16,6 +16,29 @@ import java.util.Arrays;
 
 public class Engine extends MonoBehaviour {
 
+
+    public Engine(boolean newGame) {
+        if (PlayerPrefs.GetObject("Game", Game.class) == null || newGame) {
+            Game(new Game());
+            return;
+        } else {
+            Game((Game) PlayerPrefs.GetObject("Game", Game.class));
+        }
+        File file = new File("Engine.json");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            printWriter.println(Json.ToJson(this));
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void Println(String text) {
         window.Println(text);
     }
@@ -24,8 +47,8 @@ public class Engine extends MonoBehaviour {
         JFrame window = new JFrame();
         JPanel background = new JPanel();
         JLabel console = new JLabel("<html> </html>");
-        private String lastMessage = "";
-        String text = "";
+        private String lastMessage = "", text = "";
+
         public ConsoleWindow(String title) {
             console.setForeground(Color.GREEN);
             background.setBackground(Color.BLACK);
@@ -59,13 +82,21 @@ public class Engine extends MonoBehaviour {
                                 case normal:
                                     Main.Engine().Game().ReadCommand(lastMessage);
                                     break;
+                                case death:
+                                    if ("новая игра".equals(lastMessage)) {
+                                        Main.main(new String[]{"newGame"});
+                                        return;
+                                    }
+                                    Println("Вы мертвы, начните новую игру");
                             }
                             Console.Println(lastMessage);
                             lastMessage = "";
                             break;
                         case KeyEvent.VK_BACK_SPACE:
-                            text = (text.length() > 0) ? text.substring(0, text.length() -1) : "" ;
-                            lastMessage = (lastMessage.length() > 0) ? lastMessage.substring(0, lastMessage.length() -1) : "" ;
+                            if (lastMessage.length() > 0) {
+                                text = (text.length() > 0) ? text.substring(0, text.length() - 1) : "";
+                                lastMessage = lastMessage.substring(0, lastMessage.length() - 1);
+                            }
                             console.setText("<html>" + text.replaceAll("\n", "<br>") + "</html>");
                             break;
                         case KeyEvent.VK_SPACE:
@@ -87,8 +118,8 @@ public class Engine extends MonoBehaviour {
 
                 }
             });
-            background.setBounds(0, 0, 100*100000, 100*100000);
-            console.setBounds(0, 0, 100*100000, 100*100000);
+            background.setBounds(0, 0, 100 * 100000, 100 * 100000);
+            console.setBounds(0, 0, 100 * 100000, 100 * 100000);
             console.setHorizontalAlignment(SwingConstants.LEFT);
             console.setVerticalAlignment(SwingConstants.NORTH);
             window.setVisible(true);
@@ -132,32 +163,12 @@ public class Engine extends MonoBehaviour {
             background.setBounds(0, 0, window.getWidth(), window.getHeight());
             console.setBounds(0, 0, background.getWidth(), background.getHeight());
         }
+
     }
 
     Game game;
-    static ConsoleWindow window = new ConsoleWindow("Insomnia - console");
 
-    public void PreInit() {
-        if (PlayerPrefs.GetObject("Game", Game.class) == null) {
-            Game(new Game());
-            return;
-        } else {
-            Game((Game) PlayerPrefs.GetObject("Game", Game.class));
-        }
-        File file = new File("Engine.json");
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            PrintWriter printWriter = new PrintWriter(file);
-            printWriter.println(Json.ToJson(this));
-            printWriter.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    static ConsoleWindow window = new ConsoleWindow("Insomnia - console");
 
     private void Game(Game game) {
         this.game = game;

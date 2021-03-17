@@ -18,12 +18,16 @@ import uweellibs.*;
 public class Main extends MonoBehaviour {
     public static Engine engine;
 
-    public void PreInit() {
-        engine = new Engine();
+    public Main(String[] args) {
+        try {
+            if(args[0] == "newGame")
+                engine = new Engine(true);
+        } catch (IndexOutOfBoundsException ignored) {}
+        engine = new Engine(false);
     }
 
     public static void main(String[] args) {
-        new Main();
+        new Main(args);
     }
     public static Engine Engine(){
         return engine;

@@ -1,5 +1,6 @@
 package com.uweeldteam.game.player;
 
+import com.uweeldteam.Engine;
 import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -33,7 +34,7 @@ public class Player extends MonoBehaviour {
     }
 
     public void Death() {
-        Console.Println("Поздравляем, вы мертвы!");
+        Engine.Println("Поздравляем, вы мертвы!");
     }
 
     public static class Stats {

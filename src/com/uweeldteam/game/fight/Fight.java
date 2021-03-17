@@ -44,6 +44,7 @@ public class Fight {
             Engine.Println(enemy.names[0] + " нанёс вам сильные увечия.");
         }
         if (Player().Stats().health <= 0) {
+            Game.gameState = GameState.death;
             Player().Death();
             return;
         }
@@ -80,15 +81,15 @@ public class Fight {
         return Main.Engine().Game().Player();
     }
 
-    public void Fight() {
+    public Fight() {
         try {
-            Fight(AllMobs().get(Random.Range(0, AllMobs().size())));
+            new Fight(AllMobs().get(Random.Range(0, AllMobs().size())));
         } catch (IndexOutOfBoundsException ignored) {
-            Fight();
+            new Fight();
         }
     }
 
-    public void Fight(Mob mob) {
+    public Fight(Mob mob) {
         Game.canAction = false;
         energy = 15;
         enemy = mob;

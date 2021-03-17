@@ -146,7 +146,7 @@ public class Game extends MonoBehaviour {
                 default:
                     Engine.Println(
                             "Такой комманды не существует." +
-                            "\nЕсли вы не знаете комманды то их можно прочитать в \"Помощь->Комманды\"");
+                            "\nЕсли вы не знаете комманды то их можно прочитать в \"Помощь -> Комманды\"");
             }
         } catch (NullPointerException ignored) {
         }
