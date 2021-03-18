@@ -69,7 +69,7 @@ public class Engine extends MonoBehaviour {
             window = new JFrame(title);
             background = new JPanel();
             window.add(background);
-            console = new JLabel("<html>> </html>");
+            console = new JLabel();
             scroll = new JScrollPane(console,
                     JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             background.add(scroll);
@@ -111,6 +111,7 @@ public class Engine extends MonoBehaviour {
                                 default:
                                     throw new IllegalStateException();
                             }
+                            Print(defaultText());
                             lastMessage = "";
                             break;
                         case KeyEvent.VK_BACK_SPACE:
@@ -161,6 +162,7 @@ public class Engine extends MonoBehaviour {
                 e.printStackTrace();
             }
             window.setVisible(true);
+            FormatText();
             new Thread(() -> {
                 int times = 0;
                 do {
@@ -171,12 +173,22 @@ public class Engine extends MonoBehaviour {
 
                     } else {
                         console.setText("<html>>&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "|</html>");
-
                     }
                     if (times == 20)
                         times = 0;
                 } while (true);
             }).start();
+        }
+
+        String defaultText() {
+            try {
+                return ((Main.Engine().Game().gameState == GameState.normal
+                        ? "Город -> " :
+                        ((Main.Engine().Game().gameState == GameState.fight) ?
+                                "Бой -> " : "Мёртв -> ")));
+            } catch (NullPointerException e){
+                return "Город -> ";
+            }
         }
 
         public void Println(Object... objects) {

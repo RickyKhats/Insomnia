@@ -128,8 +128,7 @@ public class Inventory {
             if (container.AllMass() + remains.Item().Mass() > container.MaxMass()) {
                 if (container != nullItem)
                     Engine.Println("Ваш " + container.Names(0).toLowerCase() + " не выдержит столько веса");
-                else
-                    break;
+                break;
             }
             int f = FindFirstAvailableSlot(remains, container.Slots());
             try {
