@@ -1,7 +1,6 @@
 package com.uweeldteam.game;
 
 import com.uweeldteam.Engine;
-import com.uweeldteam.GameState;
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class Game extends MonoBehaviour {
     public static boolean canAction = true;
-    public static GameState gameState = GameState.normal;
+    public Engine.GameState gameState = Engine.GameState.normal;
     public Fight fight;
     Player player;
 
@@ -23,19 +22,19 @@ public class Game extends MonoBehaviour {
     }
 
     void CountHunger() {
-        if (Player().Stats().satiety < 1) {
+        if (Player().Stats().satiety <= 0) {
             Player().Stats().food += 0.04f;
         } else {
             Player().Stats().satiety -= 0.04f;
         }
-        if (Player().Stats().drunkenness < 1) {
+        if (Player().Stats().drunkenness <= 0) {
             Player().Stats().water += 0.07f;
         } else {
             Player().Stats().drunkenness -= 0.07f;
         }
-        if (Player().Stats().food < 1)
+        if (Player().Stats().food > 5)
             Player().Stats().health -= 2;
-        if (Player().Stats().water < 1)
+        if (Player().Stats().water > 3)
             Player().Stats().health -= 2;
     }
 

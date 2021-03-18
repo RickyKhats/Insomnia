@@ -20,10 +20,11 @@ public class Main extends MonoBehaviour {
 
     public Main(String[] args) {
         try {
-            if(args[0] == "newGame")
+            if(args[0].equals("newGame"))
                 engine = new Engine(true);
-        } catch (IndexOutOfBoundsException ignored) {}
-        engine = new Engine(false);
+        } catch (IndexOutOfBoundsException ignored){
+            engine = new Engine(false);
+        }
     }
 
     public static void main(String[] args) {

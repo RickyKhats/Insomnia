@@ -1,78 +1,82 @@
 package com.uweeldteam;
 
 import com.uweeldteam.game.Game;
+import com.uweeldteam.game.fight.Fight;
 import uweellibs.*;
-import uweellibs.Console;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 public class Engine extends MonoBehaviour {
-
+    static ConsoleWindow window = new ConsoleWindow("Insomnia - cmd", 800, 420);
+    Game game;
 
     public Engine(boolean newGame) {
-        if (PlayerPrefs.GetObject("Game", Game.class) == null || newGame) {
+        if (newGame)
             Game(new Game());
-            return;
-        } else {
-            Game((Game) PlayerPrefs.GetObject("Game", Game.class));
-        }
+        else
+            try {
+                Game((Game) PlayerPrefs.GetObject("Game", Game.class));
+            } catch (NullPointerException e) {
+                Game(new Game());
+            }
         File file = new File("Engine.json");
+        boolean fileCreated = false;
         try {
-            file.createNewFile();
+            fileCreated = file.createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
-            PrintWriter printWriter = new PrintWriter(file);
-            printWriter.println(Json.ToJson(this));
-            printWriter.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        if (fileCreated)
+            try {
+                PrintWriter printWriter = new PrintWriter(file);
+                printWriter.println(Json.ToJson(this));
+                printWriter.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
     }
 
     public static void Println(String text) {
         window.Println(text);
     }
 
+    private void Game(Game game) {
+        this.game = game;
+    }
+
+    public Game Game() {
+        return game;
+    }
+
+    public enum GameState {
+        fight, normal, death
+    }
+
     static class ConsoleWindow {
-        JFrame window = new JFrame();
-        JLabel console = new JLabel("<html>> </html>");
-        JPanel background = new JPanel();
+        JFrame window;
+        JLabel console;
+        JPanel background;
         JScrollPane scroll;
         private String lastMessage = "", text = "";
 
-        public ConsoleWindow(String title) {
-            console.setForeground(Color.GREEN);
-            try {
-                console.setFont(Font.createFont(Font.TRUETYPE_FONT, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 12f));
-            } catch (FontFormatException | IOException e) {
-                e.printStackTrace();
-            }
-            scroll = new JScrollPane(console,
-                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            scroll.setBackground(Color.BLACK);
-            window.setLayout(new BorderLayout());
-            background.setLayout(new BorderLayout());
-            scroll.setLayout(new ScrollPaneLayout());
-            window.setSize(600, 520);
-            background.setSize(window.getSize());
-            scroll.setSize(background.getWidth() - 15, background.getHeight() - 37);
-            console.setSize(scroll.getWidth(), scroll.getHeight());
-            scroll.getVerticalScrollBar().setValue((int) window.getAlignmentX());
-            background.add(scroll);
-            window.setName(title);
+        public ConsoleWindow(String title, int weight, int height) {
+            window = new JFrame(title);
+            background = new JPanel();
             window.add(background);
+            console = new JLabel("<html>> </html>");
+            scroll = new JScrollPane(console,
+                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            background.add(scroll);
+            background.setLayout(new BorderLayout());
+            window.setLayout(new BorderLayout());
+            window.setSize(weight, height);
+            window.setResizable(false);
             window.addKeyListener(new KeyListener() {
 
                 boolean CheckChar(char ch) {
@@ -90,9 +94,9 @@ public class Engine extends MonoBehaviour {
                     switch (keyEvent.getKeyCode()) {
                         case KeyEvent.VK_ENTER:
                             Print("\n");
-                            switch (Game.gameState) {
+                            switch (Main.Engine().Game().gameState) {
                                 case fight:
-                                    Main.Engine().Game().fight.ReadCommand(lastMessage);
+                                    Fight.ReadCommand(lastMessage);
                                     break;
                                 case normal:
                                     Main.Engine().Game().ReadCommand(lastMessage);
@@ -107,9 +111,7 @@ public class Engine extends MonoBehaviour {
                                 default:
                                     throw new IllegalStateException();
                             }
-                            Console.Println(lastMessage);
                             lastMessage = "";
-                            scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum() + 50);
                             break;
                         case KeyEvent.VK_BACK_SPACE:
                             if (lastMessage.length() > 0) {
@@ -125,6 +127,7 @@ public class Engine extends MonoBehaviour {
                                 Print(keyEvent.getKeyChar());
                                 lastMessage += keyEvent.getKeyChar();
                             }
+                            break;
                     }
                 }
 
@@ -136,25 +139,27 @@ public class Engine extends MonoBehaviour {
 
                 }
             });
-            window.addComponentListener(new ComponentListener() {
-                public void componentResized(ComponentEvent e) {
-
-                }
-
-                public void componentHidden(ComponentEvent e) {
-
-                }
-
-                public void componentMoved(ComponentEvent e) {
-
-                }
-
-                public void componentShown(ComponentEvent e) {
-
-                }
-            });
-            console.setHorizontalAlignment(SwingConstants.LEFT);
+            background.setSize(window.getSize());
+            scroll.setLayout(new ScrollPaneLayout());
+            background.setBackground(Color.BLACK);
+            scroll.getVerticalScrollBar().setBackground(Color.BLACK);
+            scroll.getHorizontalScrollBar().setBackground(Color.BLACK);
+            scroll.getVerticalScrollBar().getFocusCycleRootAncestor().setForeground(Color.BLACK);
+            scroll.getViewport().setBackground(Color.BLACK);
+            console.setForeground(Color.GREEN);
+            scroll.setSize(background.getWidth() + 20, background.getHeight() - 38);
+            scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
+            console.setSize(scroll.getSize());
             console.setVerticalAlignment(SwingConstants.NORTH);
+            console.setHorizontalAlignment(SwingConstants.LEFT);
+            try {
+                console.setFont(
+                        Font.createFont(
+                                Font.TRUETYPE_FONT,
+                                new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13));
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
+            }
             window.setVisible(true);
             new Thread(() -> {
                 int times = 0;
@@ -162,9 +167,11 @@ public class Engine extends MonoBehaviour {
                     Time.Sleep(50);
                     times++;
                     if (times > 10 && times < 20) {
-                        FormatText(text);
+                        console.setText("<html>>&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
+
                     } else {
-                        FormatText(text + "|");
+                        console.setText("<html>>&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "|</html>");
+
                     }
                     if (times == 20)
                         times = 0;
@@ -179,11 +186,13 @@ public class Engine extends MonoBehaviour {
                     if (!object.toString().replaceAll(" {2}", " ").equals(" "))
                         text.add(object.toString());
             for (String Text : text)
-                this.text += Text + "\n";
+                Print(Text + "\n");
+            FormatText();
         }
 
-        void FormatText(String text) {
+        void FormatText() {
             console.setText("<html>>&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
+            scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
         }
 
         public void Print(Object... objects) {
@@ -192,19 +201,11 @@ public class Engine extends MonoBehaviour {
                 if (!object.toString().equals(""))
                     text.add(object.toString());
             for (String Text : text)
-                this.text += Text;
+                this.text = String.format("%s%s", this.text, Text);
+            new Thread(() -> {
+                Time.Sleep(50);
+                FormatText();
+            }).start();
         }
-    }
-
-    Game game;
-
-    static ConsoleWindow window = new ConsoleWindow("Insomnia - console");
-
-    private void Game(Game game) {
-        this.game = game;
-    }
-
-    public Game Game() {
-        return game;
     }
 }

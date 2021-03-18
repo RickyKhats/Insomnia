@@ -38,14 +38,23 @@ public class Player extends MonoBehaviour {
     }
 
     public static class Stats {
-        public String name = "Tester";
+        public String name;
         public float
-                health = 100,
-                food = 0,
-                water = 0,
-                strength = 1,
-                satiety = 2,
-                drunkenness = 2;
+                health,
+                food,
+                water,
+                strength,
+                satiety,
+                drunkenness;
+        public Stats(){
+            name = "tester";
+            health = 100f;
+            food = 0f;
+            water = 0f;
+            strength = 1f;
+            satiety = 2f;
+            drunkenness = 2f;
+        }
     }
 
     public Stats stats;
