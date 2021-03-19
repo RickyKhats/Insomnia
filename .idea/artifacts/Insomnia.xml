@@ -1,9 +1,14 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Insomnia">
+  <artifact build-on-make="true" name="Insomnia">
     <output-path>$PROJECT_DIR$/out/artifacts/Insomnia</output-path>
-    <root id="archive" name="Insomnia.jar">
+    <root id="root">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="VCS" />
+      <element id="directory" name="Lib">
+        <element id="file-copy" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar" />
+        <element id="file-copy" path="$PROJECT_DIR$/UweelLibs.jar" />
       </element>
     </root>
   </artifact>
