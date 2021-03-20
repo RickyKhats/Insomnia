@@ -23,16 +23,16 @@ public class Main extends MonoBehaviour {
     }
 
     public static void main(String[] args) {
+        new ExceptionOccurred(new Throwable("Anus"));
         try {
-            try {
+            /*try {
                 if (args[0].equals("newGame")) {
                     engine = new Engine(true);
                 }
             } catch (IndexOutOfBoundsException e) {
                 engine = new Engine(false);
-            }
+            }*/
         } catch (Exception e) {
-            new ExceptionOccurred(e);
         }
     }
 
