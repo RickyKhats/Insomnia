@@ -44,7 +44,7 @@ public class CraftSystem {
 
     public static void Craft(Item item) {
         for(int i = 0; i < item.Craft().size(); ++i) {
-            if (canCraft(((Craft)item.Craft().get(i)).Items())) {
+            if (canCraft((item.Craft().get(i)).Items())) {
                 Player().Inventory().DeleteItems(item.Craft(i));
                 Player().Inventory().AddItem(new Slot(item, 1), false);
                 Engine.Println("Вы скрафтили " + item.Names(0).toLowerCase());
@@ -75,21 +75,21 @@ public class CraftSystem {
     }
 
     static boolean canCraft(Item... items) {
-        ArrayList<Item> craft = new ArrayList(Arrays.asList(items));
-        ArrayList<ArrayList<Slot>> containers = new ArrayList();
-        ArrayList<Slot> slots = new ArrayList();
-        Iterator var4 = craft.iterator();
+        ArrayList<Item> craft = new ArrayList<>(Arrays.asList(items));
+        ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
+        ArrayList<Slot> slots = new ArrayList<>();
+        Iterator<Item> var4 = craft.iterator();
 
         while(true) {
             while(var4.hasNext()) {
-                Item item = (Item)var4.next();
+                Item item = var4.next();
                 if (!slots.contains(new Slot(item, 1))) {
                     slots.add(new Slot(item, 1));
                 } else {
-                    Iterator var6 = slots.iterator();
+                    Iterator<Slot> var6 = slots.iterator();
 
                     while(var6.hasNext()) {
-                        Slot slot = (Slot)var6.next();
+                        Slot slot = var6.next();
                         if (slot.Item() == item) {
                             slot.Add(new Slot(item, 1));
                             break;
@@ -99,28 +99,28 @@ public class CraftSystem {
             }
 
             try {
-                containers.add((ArrayList)Hands().clone());
-            } catch (NullPointerException var12) {
+                containers.add((ArrayList<Slot>) Hands().clone());
+            } catch (NullPointerException e) {
             }
 
             try {
-                containers.add((ArrayList)Backpack().clone());
-            } catch (NullPointerException var11) {
+                containers.add((ArrayList<Slot>)Backpack().clone());
+            } catch (NullPointerException e) {
             }
 
             try {
-                containers.add((ArrayList)Pants().clone());
-            } catch (NullPointerException var10) {
+                containers.add((ArrayList<Slot>)Pants().clone());
+            } catch (NullPointerException e) {
             }
 
             try {
-                containers.add((ArrayList)Torso().clone());
-            } catch (NullPointerException var9) {
+                containers.add((ArrayList<Slot>)Torso().clone());
+            } catch (NullPointerException e) {
             }
 
             try {
-                containers.add((ArrayList)Pouch().clone());
-            } catch (NullPointerException var8) {
+                containers.add((ArrayList<Slot>)Pouch().clone());
+            } catch (NullPointerException e) {
             }
 
             int containerId = 0;
@@ -128,10 +128,10 @@ public class CraftSystem {
 
             do {
                 try {
-                    for(int i = 0; i < ((ArrayList)containers.get(containerId)).size(); ++i) {
+                    for(int i = 0; i < containers.get(containerId).size(); ++i) {
                         for(int j = 0; j < ((Slot)((ArrayList)containers.get(containerId)).get(i)).Value(); ++j) {
-                            if (((Slot)((ArrayList)containers.get(containerId)).get(i)).Item() == ((Slot)slots.get(0)).Item()) {
-                                ((Slot)((ArrayList)containers.get(containerId)).get(i)).Remove(new Slot(((Slot)slots.get(0)).Item(), 1));
+                            if (((Slot)((ArrayList)containers.get(containerId)).get(i)).Item() == slots.get(0).Item()) {
+                                ((Slot)((ArrayList)containers.get(containerId)).get(i)).Remove(new Slot(slots.get(0).Item(), 1));
                                 craft.remove(0);
                                 touched = true;
                             }
@@ -148,7 +148,7 @@ public class CraftSystem {
                     return false;
                 }
 
-                items = (Item[])craft.toArray(new Item[0]);
+                items = craft.toArray(new Item[0]);
                 return canCraft(items);
             }
 

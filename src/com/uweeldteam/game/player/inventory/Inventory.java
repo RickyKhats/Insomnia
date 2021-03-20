@@ -6,6 +6,7 @@
 package com.uweeldteam.game.player.inventory;
 
 import com.uweeldteam.Engine;
+import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -56,33 +57,25 @@ public class Inventory {
     }
 
     public void DeleteItems(Item... items) {
-        ArrayList<Item> craft = new ArrayList(Arrays.asList(items));
-        ArrayList<ArrayList<Slot>> containers = new ArrayList();
+        ArrayList<Item> craft = new ArrayList<>(Arrays.asList(items));
+        ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
 
         for(int i = 0; i < containers().size(); ++i) {
-            containers.add(((Inventory.Container)containers().get(i)).slots);
+            containers.add(containers().get(i).slots);
         }
 
         boolean touched = false;
-        Iterator var5 = containers.iterator();
 
-        while(var5.hasNext()) {
-            ArrayList<Slot> container = (ArrayList)var5.next();
-            Iterator var7 = container.iterator();
+        for (ArrayList<Slot> slots : containers) {
 
-            while(var7.hasNext()) {
-                Slot slot = (Slot)var7.next();
-                Iterator var9 = craft.iterator();
-
-                while(var9.hasNext()) {
-                    Item item = (Item)var9.next();
-
+            for (Slot slot : slots) {
+                for (Item item : craft) {
                     try {
                         if (slot.Item() == item) {
                             slot.Remove(new Slot(item, 0));
                             touched = true;
                         }
-                    } catch (IndexOutOfBoundsException var12) {
+                    } catch (IndexOutOfBoundsException ignored) {
                     }
                 }
 
@@ -107,13 +100,14 @@ public class Inventory {
 
     private void Pickup(Slot slot, int got, boolean showMessage, boolean checkHands) {
         Slot remains = slot;
-        ArrayList<Item> containers = new ArrayList();
+        ArrayList<Item> containers = new ArrayList<>();
 
-        int gotten;
-        for(gotten = 0; gotten < containers().size(); ++gotten) {
-            if (((Inventory.Container)containers().get(gotten)).item != null) {
-                containers.add(((Inventory.Container)containers().get(gotten)).item);
+        int gotten = 0;
+        while (gotten < containers().size()) {
+            if (containers().get(gotten).item != null) {
+                containers.add(containers().get(gotten).item);
             }
+            gotten++;
         }
 
         if (checkHands) {
@@ -126,8 +120,9 @@ public class Inventory {
                 int f = this.FindFirstAvailableSlot(remains, Hands().slots);
 
                 try {
-                    remains = ((Slot)Hands().slots.get(f)).Add(remains);
-                } catch (IndexOutOfBoundsException var12) {
+                    remains = Hands().slots.get(f).Add(remains);
+                } catch (Exception e) {
+                    new ExceptionOccurred(e);
                 }
             }
         }
@@ -150,24 +145,21 @@ public class Inventory {
             int f = this.FindFirstAvailableSlot(remains, container.Slots());
 
             try {
-                remains = ((Slot)container.Slots().get(f)).Add(remains);
-            } catch (IndexOutOfBoundsException var11) {
+                remains = container.Slots().get(f).Add(remains);
+            } catch (IndexOutOfBoundsException ignored) {
             }
         }
 
-        String var10000;
         if (remains.Value() > 0) {
             if (remains.Value() != slot.Value()) {
                 this.Pickup(remains, got + slot.Value() - remains.Value(), showMessage, false);
             } else {
-                var10000 = remains.Item().Names(1).toLowerCase();
-                Engine.Println("Недостаточно места на " + var10000 + (remains.Value() > 1 ? " X" + remains.Value() : "."));
+                Engine.Println("Недостаточно места на " + remains.Item().Names(1).toLowerCase() + (remains.Value() > 1 ? " X" + remains.Value() : "."));
             }
         } else {
             gotten = slot.Value() + remains.Value();
             if (showMessage) {
-                var10000 = remains.Item().Names(1).toLowerCase();
-                Engine.Println("Вы получили " + var10000 + (gotten + got > 1 ? " X" + (gotten + got) : ""));
+                Engine.Println("Вы получили " + remains.Item().Names(1).toLowerCase() + (gotten + got > 1 ? " X" + (gotten + got) : ""));
             }
         }
 
@@ -175,7 +167,7 @@ public class Inventory {
 
     public boolean Contains(Item item) {
         for(int i = 0; i < containers().size(); ++i) {
-            if (((Inventory.Container)containers().get(i)).item == item) {
+            if (containers().get(i).item == item) {
                 return true;
             }
         }
@@ -187,11 +179,11 @@ public class Inventory {
         int firstFree = -1;
 
         for(int i = 0; i < slots.size(); ++i) {
-            if (((Slot)slots.get(i)).Item().equals(slot.Item()) && ((Slot)slots.get(i)).Value() != ((Slot)slots.get(i)).Item().MaxStack()) {
+            if (slots.get(i).Item().equals(slot.Item()) && slots.get(i).Value() != slots.get(i).Item().MaxStack()) {
                 return i;
             }
 
-            if (((Slot)slots.get(i)).Item() == Item.nullItem && firstFree == -1) {
+            if (slots.get(i).Item() == Item.nullItem && firstFree == -1) {
                 firstFree = i;
             }
         }
@@ -216,8 +208,10 @@ public class Inventory {
     }
 
     public String toString() {
-        String var10000 = this.percent(Player().AllHandsMass());
-        String result = "Инвентарь:\nРуки(" + var10000 + "/" + this.percent(Player().MaxHandsMass()) + ")\n" + Player().Inventory().toString(Player().Hands());
+        String result = "Инвентарь:\nРуки("
+                + percent(Player().AllHandsMass())
+                + "/" + this.percent(Player().MaxHandsMass())
+                + ")\n" + Player().Inventory().toString(Player().Hands());
         result = result + this.toString(Player().Backpack());
         result = result + this.toString(Player().Pouch());
         result = result + this.toString(Player().Torso());

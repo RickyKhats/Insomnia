@@ -9,7 +9,7 @@ import com.uweeldteam.game.player.inventory.item.Item;
 import uweellibs.Range;
 
 public enum Mob {
-    Robber(40.0F, new Item[]{Item.ironKnife, Item.smallAllowance}, new Range(5, 17), new Range(15, 32), new String[]{"Разбойник", "Разбойника", "Разбойнику"});
+    Robber(40.0F, new Item[]{Item.ironKnife, Item.smallAllowance}, new Range(5, 17), new Range(15, 32), "Разбойник", "Разбойника", "Разбойнику");
 
     String[] names;
     float health;
@@ -19,18 +19,18 @@ public enum Mob {
     float standardHealth;
     Mob.MobType type;
 
-    private Mob(float standardHealth, Item[] drop, String... names) {
+    Mob(float standardHealth, Item[] drop, String... names) {
         this.setType(Mob.MobType.animal);
         this.StandardHealth(standardHealth);
         this.Drop(drop);
         this.Names(names);
     }
 
-    private Mob() {
+    Mob() {
         this.setType(Mob.MobType.npc);
     }
 
-    private Mob(float standardHealth, Item[] drop, Range damage, Range defence, String... names) {
+    Mob(float standardHealth, Item[] drop, Range damage, Range defence, String... names) {
         this.setType(Mob.MobType.enemy);
         this.Names(names);
         this.Damage(damage);
@@ -95,12 +95,9 @@ public enum Mob {
         return this.type;
     }
 
-    public static enum MobType {
+    public enum MobType {
         animal,
         npc,
-        enemy;
-
-        private MobType() {
-        }
+        enemy
     }
 }

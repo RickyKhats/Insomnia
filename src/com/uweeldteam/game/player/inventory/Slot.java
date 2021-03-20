@@ -77,7 +77,6 @@ public class Slot {
     }
 
     public String toString() {
-        String var10000 = this.Item().Names(0);
-        return var10000 + (this.Value() > 1 ? " X" + this.Value() : "");
+        return Item().Names(0) + (this.Value() > 1 ? " X" + this.Value() : "");
     }
 }

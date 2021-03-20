@@ -10,9 +10,10 @@ import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.item.Item;
 import com.uweeldteam.game.player.inventory.item.Item.ItemType;
+import uweellibs.MonoBehaviour;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import uweellibs.MonoBehaviour;
 
 public class Player extends MonoBehaviour {
     public Player.Stats stats;
@@ -46,8 +47,8 @@ public class Player extends MonoBehaviour {
     public float AllHandsMass() {
         float result = 0.0F;
 
-        for(int i = 0; i < this.Hands().size(); ++i) {
-            result += ((Slot)this.Hands().get(i)).getAllMass();
+        for (int i = 0; i < this.Hands().size(); ++i) {
+            result += this.Hands().get(i).getAllMass();
         }
 
         return result;
@@ -83,8 +84,8 @@ public class Player extends MonoBehaviour {
         } else {
             try {
                 throw new IllegalArgumentException("Item is not backpack!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -98,8 +99,8 @@ public class Player extends MonoBehaviour {
         if (item.Type() != ItemType.armor && item.Type() != ItemType.armorBackpack) {
             try {
                 throw new IllegalArgumentException("Item is not pants!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             this.pants = item;
@@ -115,8 +116,8 @@ public class Player extends MonoBehaviour {
         if (item.Type() != ItemType.armor && item.Type() != ItemType.armorBackpack) {
             try {
                 throw new IllegalArgumentException("Item is not torso!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } else {
             this.torso = item;
@@ -134,8 +135,8 @@ public class Player extends MonoBehaviour {
         } else {
             try {
                 throw new IllegalArgumentException("Item is not pouch!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -151,8 +152,8 @@ public class Player extends MonoBehaviour {
         } else {
             try {
                 throw new IllegalArgumentException("Item is not first weapon!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -168,16 +169,15 @@ public class Player extends MonoBehaviour {
         } else {
             try {
                 throw new IllegalArgumentException("Item is not second weapon!");
-            } catch (Exception var3) {
-                var3.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
     }
 
     public String toString() {
-        String var10000 = this.stats.name;
-        return var10000 + " (" + String.format("%.2f", this.stats.health) + "%)\nУровень силы: " + String.format("%.0f", this.stats.strength) + "\nГолод: " + String.format("%.2f", this.stats.food) + "%\nЖажда: " + String.format("%.2f", this.stats.water) + "%\nЭкипировка:\nОсновное оружие - " + this.firstWeapon.Names(1).toLowerCase() + "\nЗапасное оружие - " + this.secondWeapon.Names(1).toLowerCase() + "\nРюкзак - " + this.backpack.Names(1).toLowerCase() + "\nТорс - " + this.torso.Names(1).toLowerCase() + "\nНоги - " + this.pants.Names(1).toLowerCase() + "\nПодсумок - " + this.pouch.Names(1).toLowerCase();
+        return stats.name + " (" + String.format("%.2f", this.stats.health) + "%)\nУровень силы: " + String.format("%.0f", this.stats.strength) + "\nГолод: " + String.format("%.2f", this.stats.food) + "%\nЖажда: " + String.format("%.2f", this.stats.water) + "%\nЭкипировка:\nОсновное оружие - " + this.firstWeapon.Names(1).toLowerCase() + "\nЗапасное оружие - " + this.secondWeapon.Names(1).toLowerCase() + "\nРюкзак - " + this.backpack.Names(1).toLowerCase() + "\nТорс - " + this.torso.Names(1).toLowerCase() + "\nНоги - " + this.pants.Names(1).toLowerCase() + "\nПодсумок - " + this.pouch.Names(1).toLowerCase();
     }
 
     public static class Stats {
@@ -190,6 +190,7 @@ public class Player extends MonoBehaviour {
         public float drunkenness = 2.0F;
 
         public Stats() {
+
         }
     }
 }
