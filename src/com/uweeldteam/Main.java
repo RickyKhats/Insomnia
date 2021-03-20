@@ -5,34 +5,23 @@
 
 package com.uweeldteam;
 
-import sun.swing.SwingUtilities2;
 import uweellibs.MonoBehaviour;
-
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
-import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Arrays;
-import java.util.Date;
 
 public class Main extends MonoBehaviour {
     public static Engine engine;
 
-    public Main() {
-    }
-
     public static void main(String[] args) {
         new ExceptionOccurred(new Throwable("Anus"));
         try {
-            /*try {
+            try {
                 if (args[0].equals("newGame")) {
                     engine = new Engine(true);
                 }
             } catch (IndexOutOfBoundsException e) {
                 engine = new Engine(false);
-            }*/
+            }
         } catch (Exception e) {
+            new ExceptionOccurred(e);
         }
     }
 
