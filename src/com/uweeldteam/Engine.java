@@ -2,6 +2,7 @@ package com.uweeldteam;
 
 import com.uweeldteam.game.Game;
 import com.uweeldteam.game.fight.Fight;
+import uweellibs.Console;
 import uweellibs.*;
 
 import javax.swing.*;
@@ -17,33 +18,33 @@ public class Engine extends MonoBehaviour {
     Game game;
 
     public Engine(boolean newGame) {
-            if (newGame) {
+        if (newGame) {
+            Game(new Game());
+        } else {
+            if (PlayerPrefs.GetObject("Game", Game.class) == null)
+                Game((Game) PlayerPrefs.GetObject("Game", Game.class));
+            else
                 Game(new Game());
-            } else {
-                if(PlayerPrefs.GetObject("Game", Game.class) == null)
-                    Game((Game) PlayerPrefs.GetObject("Game", Game.class));
-                else
-                    Game(new Game());
-            }
+        }
 
-            File file = new File("Engine.json");
-            boolean fileCreated = false;
+        File file = new File("Engine.json");
+        boolean fileCreated = false;
 
+        try {
+            fileCreated = file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (fileCreated) {
             try {
-                fileCreated = file.createNewFile();
-            } catch (IOException e) {
+                PrintWriter printWriter = new PrintWriter(file);
+                printWriter.println(Json.ToJson(this));
+                printWriter.close();
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-
-            if (fileCreated) {
-                try {
-                    PrintWriter printWriter = new PrintWriter(file);
-                    printWriter.println(Json.ToJson(this));
-                    printWriter.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
+        }
     }
 
     public static void Println(String text) {
@@ -68,7 +69,7 @@ public class Engine extends MonoBehaviour {
         death
     }
 
-    static class ConsoleWindow {
+    static class ConsoleWindow extends Console {
         JFrame window;
         JLabel console;
         JPanel background;
@@ -99,7 +100,7 @@ public class Engine extends MonoBehaviour {
                             case KeyEvent.VK_BACK_SPACE:
                                 if (lastMessage.length() > 0) {
                                     if (keyEvent.isControlDown()) {
-                                        if(lastMessage.lastIndexOf(" ") != -1){
+                                        if (lastMessage.lastIndexOf(" ") != -1) {
                                             text = text.substring(0, text.lastIndexOf(" "));
                                             lastMessage = lastMessage.substring(0, lastMessage.lastIndexOf(" "));
                                         } else {
@@ -205,22 +206,13 @@ public class Engine extends MonoBehaviour {
         }
 
         public void Print(Object... objects) {
-            ArrayList<String> text = new ArrayList<>();
-
-            for (int i = 0; i < objects.length; i++) {
-                Object object = objects[i];
-                if (!object.toString().equals("")) {
-                    text.add(object.toString());
-                }
-            }
-            for (String Text : text) {
+            for (String Text : Replace(objects)) {
                 this.text = String.format("%s%s", this.text, Text);
             }
-
-            (new Thread(() -> {
+            new Thread(() -> {
                 new WaitForSeconds(0.05F);
                 this.FormatText();
-            })).start();
+            }).start();
         }
 
         public void Close() {
@@ -236,20 +228,12 @@ public class Engine extends MonoBehaviour {
         }
 
         public void Println(Object... objects) {
-            ArrayList<String> text = new ArrayList<>();
-
-            for (Object object : objects) {
-                if (!object.toString().equals(""))
-                    text.add(object.toString());
-
-                for (String Text : text)
-                    this.text = String.format("%s%s", this.text, Text) + "\n";
-
-                (new Thread(() -> {
-                    new WaitForSeconds(0.05F);
-                    this.FormatText();
-                })).start();
-            }
+            for (String Text : Replace(objects))
+                this.text = String.format("%s%s", this.text, Text) + "\n";
+            (new Thread(() -> {
+                new WaitForSeconds(0.05F);
+                this.FormatText();
+            })).start();
         }
     }
 }

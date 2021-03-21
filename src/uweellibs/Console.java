@@ -5,24 +5,25 @@ import java.util.Scanner;
 
 public class Console {
 
-    public static void Println(Object... objects) {
-        ArrayList<String> text = new ArrayList<>();
-        for (Object object : objects)
-            if (!object.toString().equals(""))
-                if (!object.toString().replaceAll(" {2}", " ").equals(" "))
-                    text.add(object.toString());
-        for (String Text : text)
+    public void Println(Object... objects) {
+        for (String Text : Replace(objects))
             if (endsWithForbiddenCharacter(Text))
                 System.out.println("> " + Text.replaceAll("\n", "\n> "));
             else
                 System.out.println("> " + Text.replaceAll("\n", "\n> "));
     }
 
-    public static void Print(Object... objects) {
-        ArrayList<String> text = new ArrayList<>(objects.length);
+    protected ArrayList<String> Replace(Object... objects){
+        ArrayList<String> text = new ArrayList<>();
         for (Object object : objects)
-            text.add(object.toString());
-        for (String Text : text)
+            if (!object.toString().equals(""))
+                if (!object.toString().replaceAll(" {2}", " ").equals(" "))
+                    text.add(object.toString());
+                return text;
+    }
+
+    public void Print(Object... objects) {
+        for (String Text : Replace(objects))
             if (endsWithForbiddenCharacter(Text))
                 System.out.print("> " + Text.replaceAll("\n", "\n> "));
             else
