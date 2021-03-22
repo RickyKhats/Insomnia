@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Engine extends MonoBehaviour {
@@ -71,11 +70,11 @@ public class Engine extends MonoBehaviour {
 
     static class ConsoleWindow extends Console {
         JFrame window;
-        JLabel console;
+        static JLabel console;
         JPanel background;
-        JScrollPane scroll;
+        static JScrollPane scroll;
         private String lastMessage = "";
-        private String text = "";
+        private static String text = "";
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
@@ -164,12 +163,12 @@ public class Engine extends MonoBehaviour {
                 this.console.setForeground(Color.GREEN);
                 this.scroll.setSize(background.getWidth() + 20, background.getHeight() - 38);
                 this.scroll.getVerticalScrollBar().setValue(this.scroll.getVerticalScrollBar().getMaximum());
-                this.console.setSize(scroll.getSize());
-                this.console.setVerticalAlignment(1);
+                console.setSize(scroll.getSize());
+                console.setVerticalAlignment(1);
                 this.console.setHorizontalAlignment(2);
 
                 try {
-                    this.console.setFont(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(0, 13.0F));
+                    this.console.setFont(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13.0F));
                 } catch (IOException | FontFormatException e) {
                     new ExceptionOccurred(e);
                 }
@@ -200,7 +199,7 @@ public class Engine extends MonoBehaviour {
             }
         }
 
-        void FormatText() {
+        static void FormatText() {
             console.setText("<html>" + defaultText() + "&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
             scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
         }
@@ -211,7 +210,7 @@ public class Engine extends MonoBehaviour {
             }
             new Thread(() -> {
                 new WaitForSeconds(0.05F);
-                this.FormatText();
+                FormatText();
             }).start();
         }
 
@@ -219,7 +218,7 @@ public class Engine extends MonoBehaviour {
             this.window.setVisible(false);
         }
 
-        String defaultText() {
+        static String defaultText() {
             try {
                 return com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.normal ? "Город -> " : (com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.fight ? "Бой -> " : "Мёртв -> ");
             } catch (NullPointerException e) {
@@ -227,12 +226,12 @@ public class Engine extends MonoBehaviour {
             }
         }
 
-        public void Println(Object... objects) {
+        public static void Println(Object... objects) {
             for (String Text : Replace(objects))
-                this.text = String.format("%s%s", this.text, Text) + "\n";
+                text = String.format("%s%s", text, Text) + "\n";
             (new Thread(() -> {
                 new WaitForSeconds(0.05F);
-                this.FormatText();
+                FormatText();
             })).start();
         }
     }

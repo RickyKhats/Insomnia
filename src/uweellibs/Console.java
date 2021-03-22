@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Console {
 
-    public void Println(Object... objects) {
+    public static void Println(Object... objects) {
         for (String Text : Replace(objects))
             if (endsWithForbiddenCharacter(Text))
                 System.out.println("> " + Text.replaceAll("\n", "\n> "));
@@ -13,7 +13,7 @@ public class Console {
                 System.out.println("> " + Text.replaceAll("\n", "\n> "));
     }
 
-    protected ArrayList<String> Replace(Object... objects){
+    protected static ArrayList<String> Replace(Object... objects){
         ArrayList<String> text = new ArrayList<>();
         for (Object object : objects)
             if (!object.toString().equals(""))
