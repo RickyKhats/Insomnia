@@ -1,20 +1,27 @@
 package uweellibs.graphics;
 
+import com.uweeldteam.ExceptionOccurred;
 import uweellibs.Vector2;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.ButtonUI;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 
 public class Button extends WindowComponent {
 
     JButton button = new JButton();
     private OnClickListener onRightClick, onLeftClick;
     private Sprite sprite = new Sprite();
+    private Window window;
 
-    public Button(String text, int width, int height) {
+    public Button(Window window, String text, int width, int height) {
+        this.window = window;
         button.setText(text);
         button.addMouseListener(new MouseListener() {
             @Override
@@ -46,6 +53,14 @@ public class Button extends WindowComponent {
             }
         });
         button.setSize(new Dimension(width, height));
+        button.setUI(new ButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                super.paint(g,c);
+                window.drawImage(sprite.sprite.getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_DEFAULT),
+                        button.getX(), button.getY());
+            }
+        });
     }
 
     public Button OnRightClick(OnClickListener onClick) {
@@ -85,12 +100,11 @@ public class Button extends WindowComponent {
     }
 
     public Button BackgroundResource(String path) {
-        button.setUI(new ButtonUI() {
-            @Override
-            public void paint(Graphics g, JComponent c) {
-                g.drawImage(sprite.sprite.getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_DEFAULT), sprite.position.X(), sprite.position.Y(), null);
-            }
-        });
+        try {
+            sprite.sprite = ImageIO.read(new File(path));
+        } catch (IOException e) {
+            new ExceptionOccurred(e);
+        }
         return this;
     }
 }
