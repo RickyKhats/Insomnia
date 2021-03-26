@@ -9,7 +9,6 @@ import javax.swing.plaf.ButtonUI;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 
@@ -18,10 +17,8 @@ public class Button extends WindowComponent {
     JButton button = new JButton();
     private OnClickListener onRightClick, onLeftClick;
     private Sprite sprite = new Sprite();
-    private Window window;
 
-    public Button(Window window, String text, int width, int height) {
-        this.window = window;
+    public Button(String text, int width, int height) {
         button.setText(text);
         button.addMouseListener(new MouseListener() {
             @Override
@@ -56,9 +53,10 @@ public class Button extends WindowComponent {
         button.setUI(new ButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
-                super.paint(g,c);
-                window.drawImage(sprite.sprite.getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_DEFAULT),
-                        button.getX(), button.getY());
+                g.drawImage(sprite.sprite.getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_DEFAULT),
+                        button.getX(), button.getY(), null);
+                g.drawString(text, button.getX(), button.getY());
+                g.dispose();
             }
         });
     }

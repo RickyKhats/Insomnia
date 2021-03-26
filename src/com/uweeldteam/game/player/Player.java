@@ -6,6 +6,7 @@
 package com.uweeldteam.game.player;
 
 import com.uweeldteam.Engine;
+import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 
 public class Player extends MonoBehaviour {
     public Player.Stats stats;
-    ArrayList<Slot> hands = new ArrayList(Arrays.asList(new Slot(), new Slot()));
+    ArrayList<Slot> hands = new ArrayList<>(Arrays.asList(new Slot(Item.fabricBackpack, 1), new Slot()));
     Inventory inventory;
     private Item backpack;
     private Item pants;
@@ -27,7 +28,7 @@ public class Player extends MonoBehaviour {
     private Item secondWeapon;
 
     public Player() {
-        this.backpack = Item.fabricBackpack;
+        this.backpack = Item.nullItem;
         this.pants = Item.nullItem;
         this.torso = Item.nullItem;
         this.firstWeapon = Item.ironAxe;
@@ -96,12 +97,8 @@ public class Player extends MonoBehaviour {
     }
 
     public void Pants(Item item) {
-        if (item.Type() != ItemType.armor && item.Type() != ItemType.armorBackpack) {
-            try {
-                throw new IllegalArgumentException("Item is not pants!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (item.Type() != ItemType.pants) {
+            new ExceptionOccurred(new IllegalArgumentException("Item is not pants!"));
         } else {
             this.pants = item;
         }
@@ -113,12 +110,8 @@ public class Player extends MonoBehaviour {
     }
 
     public void Torso(Item item) {
-        if (item.Type() != ItemType.armor && item.Type() != ItemType.armorBackpack) {
-            try {
-                throw new IllegalArgumentException("Item is not torso!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (item.Type() != ItemType.torso && item.Type() != ItemType.armorBackpack) {
+            new ExceptionOccurred(new IllegalArgumentException("Item is not torso!"));
         } else {
             this.torso = item;
         }
@@ -177,7 +170,58 @@ public class Player extends MonoBehaviour {
     }
 
     public String toString() {
-        return stats.name + " (" + String.format("%.2f", this.stats.health) + "%)\nУровень силы: " + String.format("%.0f", this.stats.strength) + "\nГолод: " + String.format("%.2f", this.stats.food) + "%\nЖажда: " + String.format("%.2f", this.stats.water) + "%\nЭкипировка:\nОсновное оружие - " + this.firstWeapon.Names(1).toLowerCase() + "\nЗапасное оружие - " + this.secondWeapon.Names(1).toLowerCase() + "\nРюкзак - " + this.backpack.Names(1).toLowerCase() + "\nТорс - " + this.torso.Names(1).toLowerCase() + "\nНоги - " + this.pants.Names(1).toLowerCase() + "\nПодсумок - " + this.pouch.Names(1).toLowerCase();
+        return stats.name +
+                " (" + String.format("%.2f", this.stats.health) + "%)"
+                + "\nУровень силы: " + String.format("%.0f", this.stats.strength) +
+                "\nГолод: " + String.format("%.2f", this.stats.food) +
+                "%\nЖажда: " + String.format("%.2f", this.stats.water) +
+                "%\nЭкипировка:\nОсновное оружие - " + this.firstWeapon.Names(1).toLowerCase() +
+                "\nЗапасное оружие - " + this.secondWeapon.Names(1).toLowerCase() +
+                "\nРюкзак - " + this.backpack.Names(1).toLowerCase() +
+                "\nТорс - " + this.torso.Names(1).toLowerCase() +
+                "\nНоги - " + this.pants.Names(1).toLowerCase() +
+                "\nПодсумок - " + this.pouch.Names(1).toLowerCase();
+    }
+
+    public Item Equip(Item item) {
+        Item result = Item.nullItem;
+        switch (item.Type()) {
+            case torso:
+                if (torso == Item.nullItem)
+                    result = torso;
+                torso = item;
+                break;
+            case pants:
+                if (pants == Item.nullItem)
+                    result = pants;
+                pants = item;
+                break;
+            case armorBackpack:
+            case backpack:
+                if (backpack == Item.nullItem)
+                    result = backpack;
+                backpack = item;
+                break;
+            case pouch:
+                if (pouch == Item.nullItem)
+                    result = pouch;
+                pouch = item;
+                break;
+
+            case firstWeapon:
+                if (firstWeapon == Item.nullItem)
+                    result = firstWeapon;
+                firstWeapon = item;
+                break;
+            case secondWeapon:
+                if (secondWeapon == Item.nullItem)
+                    result = secondWeapon;
+                secondWeapon = item;
+                break;
+            default:
+                new ExceptionOccurred(new IllegalArgumentException("Item cannot be equipped!"));
+        }
+        return result;
     }
 
     public static class Stats {

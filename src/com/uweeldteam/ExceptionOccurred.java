@@ -10,23 +10,16 @@ import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Date;
 
+import static java.awt.BorderLayout.SOUTH;
+
 public class ExceptionOccurred {
     public ExceptionOccurred(Throwable e) {
         final JFrame exceptionWindow = new JFrame("Возникло исключение!");
         exceptionWindow.setSize(300, 500);
-        JLabel text = new JLabel(("<html>App version : 0.1 <br>"
-                + new Date().toString() + "<br>"
-                + e.getLocalizedMessage()
-                + "<br>exception occurred in "
-                + Arrays.toString(
+        JLabel text = new JLabel((String.format("<html>App version : 0.1 <br>%s<br>%s<br>exception occurred in <br> {4}%s<br>Возникла исключительная ситуация, которую я не продумал!<br>Вы можете отправить нам лог ошибки<br>Мы намного быстрее её исправим<br>Так же вы можете попробовать продолжить работу программы<br>Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>", new Date().toString(), e.getLocalizedMessage(), Arrays.toString(
                 e.getStackTrace()).substring(1, Arrays.toString(
                 e.getStackTrace()).length() - 1).replaceAll("\n", "<br>").
-                replaceAll(",", "<br>   at ") +
-                "<br>Возникла исключительная ситуация, которую я не продумал!" +
-                "<br>Вы можете отправить нам лог ошибки" +
-                "<br>Мы намного быстрее её исправим" +
-                "<br>Так же вы можете попробовать продолжить работу программы" +
-                "<br>Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>").
+                replaceAll(",", "<br>   at "))).
                 replaceAll(" ", "&nbsp;"));
         text.setVerticalAlignment(1);
         text.setHorizontalAlignment(2);
@@ -160,7 +153,7 @@ public class ExceptionOccurred {
         panel.add(nextStep);
         panel.setBackground(Color.BLACK);
         exceptionWindow.setResizable(false);
-        exceptionWindow.add(panel, "South");
+        exceptionWindow.add(panel, SOUTH);
         exceptionWindow.setVisible(true);
 
         try {

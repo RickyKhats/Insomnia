@@ -47,7 +47,7 @@ public class Engine extends MonoBehaviour {
     }
 
     public static void Println(String text) {
-        window.Println(text);
+        ConsoleWindow.Println(text);
     }
 
     private void Game(Game game) {
@@ -78,17 +78,17 @@ public class Engine extends MonoBehaviour {
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
-                this.window = new JFrame(title);
-                this.background = new JPanel();
-                this.window.add(this.background);
-                this.console = new JLabel();
-                this.scroll = new JScrollPane(this.console, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                this.background.add(scroll);
-                this.background.setLayout(new BorderLayout());
-                this.window.setLayout(new BorderLayout());
-                this.window.setSize(weight, height);
-                this.window.setResizable(false);
-                this.window.addKeyListener(new KeyListener() {
+                window = new JFrame(title);
+                background = new JPanel();
+                window.add(background);
+                console = new JLabel();
+                scroll = new JScrollPane(console, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                background.add(scroll);
+                background.setLayout(new BorderLayout());
+                window.setLayout(new BorderLayout());
+                window.setSize(weight, height);
+                window.setResizable(false);
+                window.addKeyListener(new KeyListener() {
                     boolean CheckChar(char ch) {
                         String character = String.valueOf(ch).toLowerCase();
                         return Arrays.asList(Codec.ru).contains(character) || Arrays.asList(Codec.en).contains(character) || Arrays.asList(Codec.integers).contains(character) || Arrays.asList(Codec.forbiddenCharacters).contains(character) || character.equals(String.valueOf('"'));
@@ -132,7 +132,7 @@ public class Engine extends MonoBehaviour {
                                         throw new IllegalStateException();
                                 }
                                 text = text.substring(0, text.length() - 1) + "<br>";
-                                ConsoleWindow.this.Print(ConsoleWindow.this.defaultText());
+                                ConsoleWindow.this.Print(defaultText());
                                 ConsoleWindow.this.lastMessage = "";
                                 break;
                             case KeyEvent.VK_SPACE:
@@ -153,31 +153,31 @@ public class Engine extends MonoBehaviour {
                     public void keyReleased(KeyEvent keyEvent) {
                     }
                 });
-                this.background.setSize(window.getSize());
-                this.scroll.setLayout(new ScrollPaneLayout());
-                this.background.setBackground(Color.BLACK);
-                this.scroll.getVerticalScrollBar().setBackground(Color.BLACK);
-                this.scroll.getHorizontalScrollBar().setBackground(Color.BLACK);
-                this.scroll.getVerticalScrollBar().getFocusCycleRootAncestor().setForeground(Color.BLACK);
-                this.scroll.getViewport().setBackground(Color.BLACK);
-                this.console.setForeground(Color.GREEN);
-                this.scroll.setSize(background.getWidth() + 20, background.getHeight() - 38);
-                this.scroll.getVerticalScrollBar().setValue(this.scroll.getVerticalScrollBar().getMaximum());
+                background.setSize(window.getSize());
+                scroll.setLayout(new ScrollPaneLayout());
+                background.setBackground(Color.BLACK);
+                scroll.getVerticalScrollBar().setBackground(Color.BLACK);
+                scroll.getHorizontalScrollBar().setBackground(Color.BLACK);
+                scroll.getVerticalScrollBar().getFocusCycleRootAncestor().setForeground(Color.BLACK);
+                scroll.getViewport().setBackground(Color.BLACK);
+                console.setForeground(Color.GREEN);
+                scroll.setSize(background.getWidth() + 20, background.getHeight() - 38);
+                scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
                 console.setSize(scroll.getSize());
                 console.setVerticalAlignment(1);
-                this.console.setHorizontalAlignment(2);
+                console.setHorizontalAlignment(2);
+                scroll.getVerticalScrollBar().setUnitIncrement(16);
 
                 try {
-                    this.console.setFont(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13.0F));
+                    console.setFont(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13.0F));
                 } catch (IOException | FontFormatException e) {
                     new ExceptionOccurred(e);
                 }
 
-                this.window.setVisible(true);
-                this.FormatText();
+                window.setVisible(true);
+                FormatText();
                 (new Thread(() -> {
                     int times = 0;
-
                     while (true) {
                         new WaitForSeconds(0.05F);
                         times++;
@@ -206,7 +206,7 @@ public class Engine extends MonoBehaviour {
 
         public void Print(Object... objects) {
             for (String Text : Replace(objects)) {
-                this.text = String.format("%s%s", this.text, Text);
+                text = String.format("%s%s", text, Text);
             }
             new Thread(() -> {
                 new WaitForSeconds(0.05F);

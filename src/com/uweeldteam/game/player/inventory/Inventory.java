@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.uweeldteam.game.player.inventory;
 
 import com.uweeldteam.Engine;
@@ -10,13 +5,12 @@ import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
+import uweellibs.Console;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
 public class Inventory {
-    public Inventory() {
-    }
 
     public static Player Player() {
         return Main.Engine().Game().Player();
@@ -43,7 +37,7 @@ public class Inventory {
     }
 
     public static ArrayList<Inventory.Container> containers() {
-        ArrayList<Inventory.Container> containers = new ArrayList();
+        ArrayList<Inventory.Container> containers = new ArrayList<>();
         containers.add(Hands());
         containers.add(Backpack());
         containers.add(Pants());
@@ -127,13 +121,9 @@ public class Inventory {
             }
         }
 
-        Iterator var13 = containers.iterator();
-
-        while(var13.hasNext()) {
-            Item container = (Item)var13.next();
-            if (remains.Value() == 0) {
+        for (Item container : containers) {
+            if (remains.Value() == 0)
                 break;
-            }
 
             if (container.AllMass() + remains.Item().Mass() > container.MaxMass()) {
                 if (container != Item.nullItem) {
@@ -141,11 +131,8 @@ public class Inventory {
                 }
                 break;
             }
-
-            int f = this.FindFirstAvailableSlot(remains, container.Slots());
-
             try {
-                remains = container.Slots().get(f).Add(remains);
+                remains = container.Slots().get(FindFirstAvailableSlot(remains, container.Slots())).Add(remains);
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
@@ -166,7 +153,8 @@ public class Inventory {
     }
 
     public boolean Contains(Item item) {
-        for(int i = 0; i < containers().size(); ++i) {
+        for(int i = 0; i < containers().size(); i++) {
+            Console.Println(containers().get(i).item.Slots().toString());
             if (containers().get(i).item == item) {
                 return true;
             }
@@ -197,38 +185,34 @@ public class Inventory {
 
     public String toString(ArrayList<Slot> slots) {
         StringBuilder returns = new StringBuilder();
-        int id = 1;
 
-        for(Iterator var4 = slots.iterator(); var4.hasNext(); ++id) {
-            Slot slot = (Slot)var4.next();
-            returns.append(id).append(": ").append(slot.toString()).append(id - 1 == slots.size() ? "" : "\n");
+        int id = 0;
+        for (Slot slot : slots) {
+            returns.append(id + 1).append(": ").append(slot.toString()).append(id == slots.size() ? "" : "\n");
+            id++;
         }
 
         return returns.toString();
     }
 
     public String toString() {
-        String result = "Инвентарь:\nРуки("
-                + percent(Player().AllHandsMass())
-                + "/" + this.percent(Player().MaxHandsMass())
-                + ")\n" + Player().Inventory().toString(Player().Hands());
-        result = result + this.toString(Player().Backpack());
-        result = result + this.toString(Player().Pouch());
-        result = result + this.toString(Player().Torso());
-        result = result + this.toString(Player().Pants());
-        return result;
+        return "Инвентарь:\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n"
+                + Player().Inventory().toString(Player().Hands())
+                + toString(Player().Backpack())
+                + toString(Player().Pouch())
+                + toString(Player().Torso())
+                + toString(Player().Pants());
     }
 
     public String toString(Item item) {
         StringBuilder returns = new StringBuilder();
         if (item != Item.nullItem) {
-            String var10002 = item.Names(0);
-            returns = new StringBuilder(var10002 + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + "): \n");
+            returns = new StringBuilder(item.Names(0) + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + "): \n");
             int id = 1;
 
-            for(Iterator var4 = item.Slots().iterator(); var4.hasNext(); ++id) {
-                Slot slot = (Slot)var4.next();
+            for (Slot slot : item.Slots()) {
                 returns.append(id).append(": ").append(slot.Item().Names(0)).append(slot.Value() < 2 ? "" : " X" + slot.Value()).append(id == item.Slots().size() ? "" : "\n");
+                id++;
             }
         }
 
@@ -236,8 +220,8 @@ public class Inventory {
     }
 
     static class Container {
-        public ArrayList<Slot> slots;
-        public Item item;
+        public ArrayList<Slot> slots = new ArrayList<>();
+        public Item item = Item.nullItem;
 
         public Container(Item container) {
             this.slots = container.Slots();

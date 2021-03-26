@@ -6,15 +6,13 @@ import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
+import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
 import com.uweeldteam.game.player.inventory.item.Item.ItemType;
 import org.jetbrains.annotations.NotNull;
-import uweellibs.Json;
-import uweellibs.MonoBehaviour;
-import uweellibs.PlayerPrefs;
-import uweellibs.Random;
+import uweellibs.*;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -100,7 +98,7 @@ public class Game extends MonoBehaviour {
             if (messages.isEmpty()) {
                 Engine.Println("Message is empty");
             } else {
-                this.ReadCommand(messages);
+                ReadCommand(messages);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,7 +106,7 @@ public class Game extends MonoBehaviour {
 
     }
 
-    private void ReadCommand(ArrayList<String> messages) throws Exception {
+    private void ReadCommand(ArrayList<String> messages) {
         if (this.Player() == null) {
             throw new IllegalStateException();
         } else {
@@ -157,7 +155,7 @@ public class Game extends MonoBehaviour {
                     case "охота":
                         fight = new Fight();
                         break;
-                    case "использовать":
+                    case "использовать": {
                         StringBuilder itemName = new StringBuilder();
                         for (int messageID = 1; messageID < messages.size(); messageID++)
                             itemName.append(messages.get(messageID));
@@ -174,11 +172,32 @@ public class Game extends MonoBehaviour {
                             }
                         }
                         break;
+                    }
+                    case "экипировать": {
+                        StringBuilder itemName = new StringBuilder();
+                        for (int messageID = 1; messageID < messages.size(); messageID++)
+                            itemName.append(messages.get(messageID));
+                        for (int i = 0; i < Player().Inventory().AllItems().length; i++) {
+                            Item item = Player().Inventory().AllItems()[i];
+                            if (itemName.toString().equals(item.Names(0).replaceAll(" ", "").toLowerCase()) || itemName.toString().equals(item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                                if (Player().Inventory().Contains(item)) {
+                                    Equip(item);
+                                } else {
+                                    Engine.Println("У вас нет такого предмета.");
+                                }
+                                Console.Println(item, itemName, Player().Inventory().Contains(item));
+                                return;
+                            }
+                        }
+                    }
+                    break;
                     default:
                         Engine.Println("Такой комманды не существует.");
+                        break;
                 }
-            } catch (NullPointerException ignored) {
-                new ExceptionOccurred(new Exception("Ошибка при чтении команды"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                new ExceptionOccurred(new Exception("Ошибка при чтении команды: " + messages.toString()));
             }
 
         }
@@ -188,9 +207,14 @@ public class Game extends MonoBehaviour {
         switch (item.Type()) {
             case food:
                 this.Eat(item);
-            case armor:
             default:
+                Engine.Println("Этот предмет нельзя использовать");
         }
+    }
+
+    private void Equip(Item item) {
+        Item returned = Player().Equip(item);
+        Player().Inventory().AddItem(new Slot(returned, 1));
     }
 
     private void Get(Item item, int value) {

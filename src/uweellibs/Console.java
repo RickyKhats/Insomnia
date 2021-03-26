@@ -13,21 +13,14 @@ public class Console {
                 System.out.println("> " + Text.replaceAll("\n", "\n> "));
     }
 
-    protected static ArrayList<String> Replace(Object... objects){
+    protected static ArrayList<String> Replace(Object... objects) {
         ArrayList<String> text = new ArrayList<>();
-        for (Object object : objects)
-            if (!object.toString().equals(""))
-                if (!object.toString().replaceAll(" {2}", " ").equals(" "))
-                    text.add(object.toString());
-                return text;
-    }
-
-    public void Print(Object... objects) {
-        for (String Text : Replace(objects))
-            if (endsWithForbiddenCharacter(Text))
-                System.out.print("> " + Text.replaceAll("\n", "\n> "));
-            else
-                System.out.print("> " + Text.replaceAll("\n", "\n> "));
+        try {
+            for (Object object : objects)
+                text.add(object.toString());
+        } catch (NullPointerException ignored) {
+        }
+        return text;
     }
 
     public static boolean endsWithForbiddenCharacter(String text) {
@@ -42,5 +35,13 @@ public class Console {
 
     public static String Read() {
         return new Scanner(System.in).nextLine();
+    }
+
+    public void Print(Object... objects) {
+        for (String Text : Replace(objects))
+            if (endsWithForbiddenCharacter(Text))
+                System.out.print("> " + Text.replaceAll("\n", "\n> "));
+            else
+                System.out.print("> " + Text.replaceAll("\n", "\n> "));
     }
 }
