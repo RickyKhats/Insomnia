@@ -3,10 +3,8 @@ package com.uweeldteam.game;
 import com.uweeldteam.Engine;
 import com.uweeldteam.Engine.GameState;
 import com.uweeldteam.ExceptionOccurred;
-import com.uweeldteam.Main;
 import com.uweeldteam.game.fight.Fight;
 import com.uweeldteam.game.player.Player;
-import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class Game extends MonoBehaviour {
     public static boolean canAction = true;
@@ -78,7 +75,7 @@ public class Game extends MonoBehaviour {
         CountHunger();
 
         try {
-            ArrayList<String> messages = new ArrayList();
+            ArrayList<String> messages = new ArrayList<>();
             int id = 0;
 
             for (int i = 0; i < message.length(); ++i) {
@@ -108,31 +105,20 @@ public class Game extends MonoBehaviour {
 
     private void ReadCommand(ArrayList<String> messages) {
         if (this.Player() == null) {
-            throw new IllegalStateException();
+            new ExceptionOccurred(new IllegalStateException("Player is null"));
         } else {
             try {
                 switch (messages.get(0)) {
                     case "получить":
-                        for (int itemId = 0, value; itemId < this.Player().Inventory().AllItems().length; itemId++) {
-                            StringBuilder itemName = new StringBuilder();
-                            value = 1;
-
-                            for (int j = 1; j < messages.size(); ++j) {
-                                try {
-                                    value = Integer.parseInt(messages.get(j));
-                                } catch (Exception var9) {
-                                    itemName.append(messages.get(j));
-                                }
-                            }
-                            Item item = this.Player().Inventory().AllItems()[itemId];
-                            if (itemName.toString().equals(item.Names(0).replaceAll(" ", "").toLowerCase()) || itemName.toString().equals(item.Names(1).replaceAll(" ", "").toLowerCase())) {
-                                this.Get(item, value);
-                                return;
-                            }
+                        Slot got = StringToItem(messages);
+                        if(got == null) {
+                            Engine.Println("Такого предмета нет.");
+                            break;
                         }
+                        Get(got);
                         break;
                     case "скрафтить":
-                        for (int i = 0; i < this.Player().Inventory().AllItems().length; ++i) {
+                        for (int i = 0; i < Player().Inventory().AllItems().length; ++i) {
                             StringBuilder itemName = new StringBuilder();
 
                             for (int messageId = 1; messageId < messages.size(); messageId++) {
@@ -203,22 +189,24 @@ public class Game extends MonoBehaviour {
         }
     }
 
+    private void Get(Item item, int value) {
+        Get(new Slot(item, value));
+    }
+
+    private void Get(Slot slot) {
+        Player().Inventory().AddItem(slot, "Вы получили ");
+    }
+
     private void Use(Item item) {
-        switch (item.Type()) {
-            case food:
-                this.Eat(item);
-            default:
-                Engine.Println("Этот предмет нельзя использовать");
-        }
+        if (item.Type() == ItemType.food)
+            this.Eat(item);
+        else
+            Engine.Println("Этот предмет нельзя использовать");
     }
 
     private void Equip(Item item) {
         Item returned = Player().Equip(item);
-        Player().Inventory().AddItem(new Slot(returned, 1));
-    }
-
-    private void Get(Item item, int value) {
-        this.Player().Inventory().AddItem(new Slot(item, value));
+        Player().Inventory().AddItem(new Slot(returned, 1), "Вы скрафтили ");
     }
 
     void Player(Player player) {
@@ -234,5 +222,25 @@ public class Game extends MonoBehaviour {
         PlayerPrefs.SetObject("Game", this);
         Engine.Println(Json.ToJson(this.Player()));
         Engine.Println("Save completed!");
+    }
+
+    public Slot StringToItem(ArrayList<String> messages){
+            for (int itemId = 0, value = 1; itemId < this.Player().Inventory().AllItems().length; itemId++) {
+                StringBuilder itemName = new StringBuilder();
+
+                for (int messageId = 1; messageId < messages.size(); messageId++) {
+                    try {
+                        value = Integer.parseInt(messages.get(messageId));
+                    } catch (Exception objectIsString) {
+                        itemName.append(messages.get(messageId));
+                    }
+                }
+                Item item = this.Player().Inventory().AllItems()[itemId];
+                if (itemName.toString().equals(item.Names(0).replaceAll(" ", "").toLowerCase()) || itemName.toString().equals(item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                    return new Slot(item, value);
+                }
+                Console.Println(item, itemName);
+            }
+        return null;
     }
 }

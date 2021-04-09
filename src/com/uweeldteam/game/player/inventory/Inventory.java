@@ -1,14 +1,16 @@
 package com.uweeldteam.game.player.inventory;
 
 import com.uweeldteam.Engine;
-import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
 import uweellibs.Console;
+import uweellibs.WaitForSeconds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.uweeldteam.game.player.inventory.item.Item.nullItem;
 
 public class Inventory {
 
@@ -39,10 +41,14 @@ public class Inventory {
     public static ArrayList<Inventory.Container> containers() {
         ArrayList<Inventory.Container> containers = new ArrayList<>();
         containers.add(Hands());
-        containers.add(Backpack());
-        containers.add(Pants());
-        containers.add(Torso());
-        containers.add(Pouch());
+        if (Backpack().item != nullItem)
+            containers.add(Backpack());
+        if (Pants().item != nullItem)
+            containers.add(Pants());
+        if (Torso().item != nullItem)
+            containers.add(Torso());
+        if (Pouch().item != nullItem)
+            containers.add(Pouch());
         return containers;
     }
 
@@ -54,7 +60,7 @@ public class Inventory {
         ArrayList<Item> craft = new ArrayList<>(Arrays.asList(items));
         ArrayList<ArrayList<Slot>> containers = new ArrayList<>();
 
-        for(int i = 0; i < containers().size(); ++i) {
+        for (int i = 0; i < containers().size(); ++i) {
             containers.add(containers().get(i).slots);
         }
 
@@ -84,76 +90,60 @@ public class Inventory {
         }
     }
 
-    public void AddItem(Slot slot, boolean showMessage) {
-        this.Pickup(slot, 0, showMessage, true);
+    public void AddItem(Slot slot, String... startMessage) {
+        int remains = Pickup(slot);
+
+        if (remains > 0)
+            Engine.Println("Недостаточно места на " + slot.Item().Names(1).toLowerCase() + (remains > 1 ? " X" + remains : "."));
+        Engine.Println(((startMessage.length == 0) ? "Вы получили " : startMessage[0]) + slot.Item().Names(1).toLowerCase() + (slot.Value() - remains > 1 ? " X" + (slot.Value() - remains) : ""));
     }
 
-    public void AddItem(Slot slot) {
-        this.Pickup(slot, 0, true, true);
+    private int Pickup(Slot slot) {
+        if (Backpack().item != nullItem && slot.Value() > 0)
+            slot.Value((short) Pickup(Hands(), slot));
+        if (Backpack().item != nullItem && slot.Value() > 0)
+            slot.Value((short) Pickup(Backpack(), slot));
+        if (Torso().item != nullItem && slot.Value() > 0)
+            slot.Value((short) Pickup(Torso(), slot));
+        if (Pants().item != nullItem && slot.Value() > 0)
+            slot.Value((short) Pickup(Pants(), slot));
+        if (Pouch().item != nullItem && slot.Value() > 0)
+            slot.Value((short) Pickup(Pouch(), slot));
+        return slot.Value();
     }
 
-    private void Pickup(Slot slot, int got, boolean showMessage, boolean checkHands) {
-        Slot remains = slot;
-        ArrayList<Item> containers = new ArrayList<>();
+    private int Pickup(Container container, Slot slot) {
+        Console.Println(container.AllMass());
+        if (slot.Value() == 0)
+            return 0;
+        else {
+            short remains = slot.Value();
 
-        int gotten = 0;
-        while (gotten < containers().size()) {
-            if (containers().get(gotten).item != null) {
-                containers.add(containers().get(gotten).item);
-            }
-            gotten++;
-        }
-
-        if (checkHands) {
-            for(gotten = 0; gotten < Hands().slots.size() && remains.Value() != 0; ++gotten) {
-                if (Player().AllHandsMass() + remains.Item().Mass() > Player().MaxHandsMass()) {
-                    Engine.Println("Ваши руки не выдержат столько веса");
-                    break;
+            while (remains > 0) {
+                byte currentSlot = (byte) FindFirstAvailableSlot(slot, container.slots);
+                if (currentSlot == -1) {
+                    Engine.Println((container.item == nullItem) ? ("Ваши руки не удержат столько вещей") : ("Ваш " + container.item.Names(0).toLowerCase() + " не выдержит столько вещей"));
+                    return remains;
+                } else if (container.AllMass() + slot.Item().Mass() > container.MaxMass()) {
+                    Engine.Println((container.item == nullItem) ? ("Ваши руки не выдержат столько веса") : ("Ваш " + container.item.Names(0).toLowerCase() + " не выдержит столько веса"));
+                    return remains;
+                } else {
+                    if (container.slots.get(currentSlot).Value() + 1 <= slot.Item().MaxStack()) {
+                        remains -= 1;
+                        container.slots.get(currentSlot).Value((short) (container.slots.get(currentSlot).Value() + 1));
+                        container.slots.get(currentSlot).Item(slot.Item());
+                    }
                 }
-
-                int f = this.FindFirstAvailableSlot(remains, Hands().slots);
-
-                try {
-                    remains = Hands().slots.get(f).Add(remains);
-                } catch (Exception e) {
-                    new ExceptionOccurred(e);
-                }
+                Console.Println(remains, currentSlot, container.slots.get(currentSlot).toString());
+                new WaitForSeconds(0.01f);
             }
-        }
-
-        for (Item container : containers) {
-            if (remains.Value() == 0)
-                break;
-
-            if (container.AllMass() + remains.Item().Mass() > container.MaxMass()) {
-                if (container != Item.nullItem) {
-                    Engine.Println("Ваш " + container.Names(0).toLowerCase() + " не выдержит столько веса");
-                }
-                break;
-            }
-            try {
-                remains = container.Slots().get(FindFirstAvailableSlot(remains, container.Slots())).Add(remains);
-            } catch (IndexOutOfBoundsException ignored) {
-            }
-        }
-
-        if (remains.Value() > 0) {
-            if (remains.Value() != slot.Value()) {
-                this.Pickup(remains, got + slot.Value() - remains.Value(), showMessage, false);
-            } else {
-                Engine.Println("Недостаточно места на " + remains.Item().Names(1).toLowerCase() + (remains.Value() > 1 ? " X" + remains.Value() : "."));
-            }
-        } else {
-            gotten = slot.Value() + remains.Value();
-            if (showMessage) {
-                Engine.Println("Вы получили " + remains.Item().Names(1).toLowerCase() + (gotten + got > 1 ? " X" + (gotten + got) : ""));
-            }
+            return remains;
         }
 
     }
 
     public boolean Contains(Item item) {
-        for(int i = 0; i < containers().size(); i++) {
+        for (int i = 0; i < containers().size(); i++) {
             Console.Println(containers().get(i).item.Slots().toString());
             if (containers().get(i).item == item) {
                 return true;
@@ -166,12 +156,12 @@ public class Inventory {
     private int FindFirstAvailableSlot(Slot slot, ArrayList<Slot> slots) {
         int firstFree = -1;
 
-        for(int i = 0; i < slots.size(); ++i) {
+        for (int i = 0; i < slots.size(); ++i) {
             if (slots.get(i).Item().equals(slot.Item()) && slots.get(i).Value() != slots.get(i).Item().MaxStack()) {
                 return i;
             }
 
-            if (slots.get(i).Item() == Item.nullItem && firstFree == -1) {
+            if (slots.get(i).Item() == nullItem && firstFree == -1) {
                 firstFree = i;
             }
         }
@@ -186,18 +176,20 @@ public class Inventory {
     public String toString(ArrayList<Slot> slots) {
         StringBuilder returns = new StringBuilder();
 
-        int id = 0;
-        for (Slot slot : slots) {
-            returns.append(id + 1).append(": ").append(slot.toString()).append(id == slots.size() ? "" : "\n");
-            id++;
-        }
-
-        return returns.toString();
+        for (int id = 0; id < slots.size(); id++)
+            returns.append(id + 1).append(": ").append(slots.get(id).toString()).append("\n");
+        return returns.substring(0, returns.length() - 1);
     }
 
     public String toString() {
         return "Инвентарь:\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n"
-                + Player().Inventory().toString(Player().Hands())
+                + toString(Player().Hands())
+                + ((Backpack().item != nullItem
+                || Pouch().item != nullItem
+                || Torso().item != nullItem
+                || Pants().item != nullItem)
+                ? ("\n")
+                : (""))
                 + toString(Player().Backpack())
                 + toString(Player().Pouch())
                 + toString(Player().Torso())
@@ -206,12 +198,16 @@ public class Inventory {
 
     public String toString(Item item) {
         StringBuilder returns = new StringBuilder();
-        if (item != Item.nullItem) {
-            returns = new StringBuilder(item.Names(0) + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + "): \n");
+        if (item != nullItem) {
+            returns = new StringBuilder(
+                    item.Names(0) + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + ") \n");
             int id = 1;
 
             for (Slot slot : item.Slots()) {
-                returns.append(id).append(": ").append(slot.Item().Names(0)).append(slot.Value() < 2 ? "" : " X" + slot.Value()).append(id == item.Slots().size() ? "" : "\n");
+                returns.append(id).append(": ")
+                        .append(slot.Item().Names(0))
+                        .append(slot.Value() < 2 ? "" : " X" + slot.Value())
+                        .append(id == item.Slots().size() ? "" : "\n");
                 id++;
             }
         }
@@ -220,8 +216,10 @@ public class Inventory {
     }
 
     static class Container {
+        public Item item = nullItem;
+        //Инициализацию эту не убирать, он кидает исключения когда её нет
+        @SuppressWarnings("UnusedAssignment")
         public ArrayList<Slot> slots = new ArrayList<>();
-        public Item item = Item.nullItem;
 
         public Container(Item container) {
             this.slots = container.Slots();
@@ -230,6 +228,14 @@ public class Inventory {
 
         public Container(ArrayList<Slot> slots) {
             this.slots = slots;
+        }
+
+        public float AllMass() {
+            return ((item != nullItem) ? item.AllMass() : Main.Engine().Game().Player().AllHandsMass());
+        }
+
+        public float MaxMass() {
+            return ((item != nullItem) ? item.MaxMass() : Main.Engine().Game().Player().MaxHandsMass());
         }
     }
 }

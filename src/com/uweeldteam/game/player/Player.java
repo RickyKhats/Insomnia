@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class Player extends MonoBehaviour {
     public Player.Stats stats;
-    ArrayList<Slot> hands = new ArrayList<>(Arrays.asList(new Slot(Item.fabricBackpack, 1), new Slot()));
+    ArrayList<Slot> hands = new ArrayList<>(Arrays.asList(new Slot(), new Slot()));
     Inventory inventory;
     private Item backpack;
     private Item pants;
@@ -28,7 +28,7 @@ public class Player extends MonoBehaviour {
     private Item secondWeapon;
 
     public Player() {
-        this.backpack = Item.nullItem;
+        this.backpack = Item.fabricBackpack;
         this.pants = Item.nullItem;
         this.torso = Item.nullItem;
         this.firstWeapon = Item.ironAxe;
@@ -187,34 +187,34 @@ public class Player extends MonoBehaviour {
         Item result = Item.nullItem;
         switch (item.Type()) {
             case torso:
-                if (torso == Item.nullItem)
+                if (torso != Item.nullItem)
                     result = torso;
                 torso = item;
                 break;
             case pants:
-                if (pants == Item.nullItem)
+                if (pants != Item.nullItem)
                     result = pants;
                 pants = item;
                 break;
             case armorBackpack:
             case backpack:
-                if (backpack == Item.nullItem)
+                if (backpack != Item.nullItem)
                     result = backpack;
                 backpack = item;
                 break;
             case pouch:
-                if (pouch == Item.nullItem)
+                if (pouch != Item.nullItem)
                     result = pouch;
                 pouch = item;
                 break;
 
             case firstWeapon:
-                if (firstWeapon == Item.nullItem)
+                if (firstWeapon != Item.nullItem)
                     result = firstWeapon;
                 firstWeapon = item;
                 break;
             case secondWeapon:
-                if (secondWeapon == Item.nullItem)
+                if (secondWeapon != Item.nullItem)
                     result = secondWeapon;
                 secondWeapon = item;
                 break;

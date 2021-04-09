@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+@SuppressWarnings("unchecked") //
 public class CraftSystem {
     public CraftSystem() {
     }
@@ -46,8 +47,7 @@ public class CraftSystem {
         for(int i = 0; i < item.Craft().size(); ++i) {
             if (canCraft((item.Craft().get(i)).Items())) {
                 Player().Inventory().DeleteItems(item.Craft(i));
-                Player().Inventory().AddItem(new Slot(item, 1), false);
-                Engine.Println("Вы скрафтили " + item.Names(0).toLowerCase());
+                Player().Inventory().AddItem(new Slot(item, 1), "Вы скрафтили ");
                 return;
             }
         }
@@ -80,16 +80,14 @@ public class CraftSystem {
         ArrayList<Slot> slots = new ArrayList<>();
         Iterator<Item> var4 = craft.iterator();
 
-        while(true) {
-            while(var4.hasNext()) {
+        do {
+            while (var4.hasNext()) {
                 Item item = var4.next();
                 if (!slots.contains(new Slot(item, 1))) {
                     slots.add(new Slot(item, 1));
                 } else {
-                    Iterator<Slot> var6 = slots.iterator();
 
-                    while(var6.hasNext()) {
-                        Slot slot = var6.next();
+                    for (Slot slot : slots) {
                         if (slot.Item() == item) {
                             slot.Add(new Slot(item, 1));
                             break;
@@ -100,48 +98,38 @@ public class CraftSystem {
 
             try {
                 containers.add((ArrayList<Slot>) Hands().clone());
-            } catch (NullPointerException e) {
-            }
-
+            } catch (NullPointerException ignored) { }
             try {
-                containers.add((ArrayList<Slot>)Backpack().clone());
-            } catch (NullPointerException e) {
-            }
-
+                containers.add((ArrayList<Slot>) Backpack().clone());
+            } catch (NullPointerException ignored) { }
             try {
-                containers.add((ArrayList<Slot>)Pants().clone());
-            } catch (NullPointerException e) {
-            }
-
+                containers.add((ArrayList<Slot>) Pants().clone());
+            } catch (NullPointerException ignored) { }
             try {
-                containers.add((ArrayList<Slot>)Torso().clone());
-            } catch (NullPointerException e) {
-            }
-
+                containers.add((ArrayList<Slot>) Torso().clone());
+            } catch (NullPointerException ignored) { }
             try {
-                containers.add((ArrayList<Slot>)Pouch().clone());
-            } catch (NullPointerException e) {
-            }
+                containers.add((ArrayList<Slot>) Pouch().clone());
+            } catch (NullPointerException ignored) { }
 
             int containerId = 0;
             boolean touched = false;
 
             do {
                 try {
-                    for(int i = 0; i < containers.get(containerId).size(); ++i) {
-                        for(int j = 0; j < ((Slot)((ArrayList)containers.get(containerId)).get(i)).Value(); ++j) {
-                            if (((Slot)((ArrayList)containers.get(containerId)).get(i)).Item() == slots.get(0).Item()) {
-                                ((Slot)((ArrayList)containers.get(containerId)).get(i)).Remove(new Slot(slots.get(0).Item(), 1));
+                    for (int i = 0; i < containers.get(containerId).size(); ++i) {
+                        for (int j = 0; j < ((containers.get(containerId)).get(i)).Value(); ++j) {
+                            if (((containers.get(containerId)).get(i)).Item() == slots.get(0).Item()) {
+                                ((containers.get(containerId)).get(i)).Remove(new Slot(slots.get(0).Item(), 1));
                                 craft.remove(0);
                                 touched = true;
                             }
                         }
                     }
-                } catch (IndexOutOfBoundsException var13) {
-                }
+                } catch (IndexOutOfBoundsException ignored) { }
 
                 ++containerId;
-            } while(containerId < containers.size());
+            } while (containerId < containers.size());
 
             if (!craft.isEmpty()) {
                 if (!touched) {
@@ -153,6 +141,6 @@ public class CraftSystem {
             }
 
             return true;
-        }
+        } while (true);
     }
 }

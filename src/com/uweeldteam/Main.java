@@ -1,8 +1,5 @@
 package com.uweeldteam;
 
-// TODO: 27.03.2021
-//  Починить ошибку проверки наличия предмета
-
 public class Main extends uweellibs.MonoBehaviour {
     public static Engine engine;
 

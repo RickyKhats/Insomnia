@@ -100,7 +100,7 @@ public class Fight {
             Engine.Println("Поздравляем, вы победили " + enemy.Name(1).toLowerCase());
 
             for (int i = 0; i < enemy.Drop().length; ++i) {
-                Player().Inventory().AddItem(new Slot(enemy.Drop()[i], 1));
+                Player().Inventory().AddItem(new Slot(enemy.Drop()[i], 1), "Вы скрафтили ");
             }
 
             Main.Engine().Game().gameState = GameState.normal;
