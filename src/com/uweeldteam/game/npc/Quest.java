@@ -17,9 +17,7 @@ public class Quest {
     public class QuestPart{
 
         //балванка
-        class Part{
-
-        }
+        class Part { }
 
         public class Dialog extends Part{
             String text;
@@ -29,9 +27,11 @@ public class Quest {
         public class Action extends Part{
             Task task;
         }
-
     }
 
-    public class Task {
+    public abstract class Task {
+        abstract void Completed();
+        abstract void GetQuest();
     }
+
 }

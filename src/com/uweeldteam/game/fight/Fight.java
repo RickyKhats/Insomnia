@@ -2,6 +2,7 @@ package com.uweeldteam.game.fight;
 
 import com.uweeldteam.Engine;
 import com.uweeldteam.Engine.GameState;
+import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.Game;
 import com.uweeldteam.game.mob.Mob;
@@ -33,10 +34,11 @@ public class Fight {
         energy = 15;
         enemy = mob;
         if (enemy == null) {
-            throw new IllegalStateException("Enemy is not be null!");
+            new ExceptionOccurred(new IllegalStateException("Enemy is not be null!"));
         } else {
             enemy.Health(mob.StandardHealth());
-            Engine.Println("Противник: " + enemy.Name(0).toLowerCase() + "\nЗдоровье - " + String.format("%.2f", enemy.Health()));
+            Engine.Println("Противник: " + enemy.Name(0).toLowerCase() +
+                    "\nЗдоровье - " + String.format("%.2f", enemy.Health()));
             this.Help();
             Main.Engine().Game().gameState = GameState.fight;
         }
@@ -94,7 +96,7 @@ public class Fight {
         }
 
         if (!(enemy.Health() <= 0.0F)) {
-            Engine.Println("Здоровье противника: " + String.format("%.2f", enemy.Health()) + "Энергия: " + energy);
+            Engine.Println("Здоровье противника: " + String.format("%.2f", enemy.Health()) + " \nЭнергия: " + energy);
             EnemyAttack();
         } else {
             Engine.Println("Поздравляем, вы победили " + enemy.Name(1).toLowerCase());

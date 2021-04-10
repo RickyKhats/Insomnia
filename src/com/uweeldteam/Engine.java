@@ -76,9 +76,13 @@ public class Engine extends MonoBehaviour {
         private String lastMessage = "";
         private static String text = "";
 
+        private static class HTMLSymbols {
+            final static String enter = "<br>", space = "&nbsp;";
+        }
+
         public ConsoleWindow(String title, int weight, int height) {
             try {
-                window = new JFrame(title);
+                window = new JFrame();
                 background = new JPanel();
                 window.add(background);
                 console = new JLabel();
@@ -182,11 +186,11 @@ public class Engine extends MonoBehaviour {
                         new WaitForSeconds(0.05F);
                         times++;
                         if (times > 10 && times < 20) {
-                            console.setText("<html>" + defaultText() + "&nbsp;"
-                                    + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
+                            console.setText("<html>" + defaultText() + HTMLSymbols.space
+                                    + text.replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space).replaceAll(" ", HTMLSymbols.space) + "</html>");
                         } else {
-                            console.setText("<html>" + defaultText() + "&nbsp;"
-                                    + text.replaceAll(" ", "&nbsp;").replaceAll("\n", "<br>>&nbsp;") + "|</html>");
+                            console.setText("<html>" + defaultText() + HTMLSymbols.space
+                                    + text.replaceAll(" ", HTMLSymbols.space).replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space) + "|</html>");
                         }
 
                         if (times == 20) {
@@ -194,13 +198,32 @@ public class Engine extends MonoBehaviour {
                         }
                     }
                 })).start();
+                new Thread(() -> {
+
+                    Time time = new Time();
+                    Time allTime;
+                    {
+                        try {
+                            allTime = (Time) PlayerPrefs.GetObject("allTime", Time.class);
+                        } catch (NullPointerException e){
+                            allTime = new Time();
+                        }
+                    }
+                    do {
+                        time.tick();
+                        allTime.tick();
+                        window.setTitle(title + " Сеанс: " + time.toString() + " Всего наиграно: " + allTime.toString());
+                        PlayerPrefs.SetObject("allTime", allTime);
+                        new WaitForSeconds(1);
+                    } while (true);
+                }).start();
             } catch (Exception e) {
                 new ExceptionOccurred(e);
             }
         }
 
         static void FormatText() {
-            console.setText("<html>" + defaultText() + "&nbsp;" + text.replaceAll("\n", "<br>>&nbsp;").replaceAll(" ", "&nbsp;") + "</html>");
+            console.setText("<html>" + defaultText() + HTMLSymbols.space + text.replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space).replaceAll(" ", HTMLSymbols.space) + "</html>");
             scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
         }
 
@@ -230,7 +253,8 @@ public class Engine extends MonoBehaviour {
             for (String Text : Replace(objects))
                 text = String.format("%s%s", text, Text) + "\n";
             (new Thread(() -> {
-                new WaitForSeconds(0.05F);
+                //вот это ожидание перед форматированием текста нужно дабы текст слайдился правильно
+                new WaitForSeconds(0.07F);
                 FormatText();
             })).start();
         }
