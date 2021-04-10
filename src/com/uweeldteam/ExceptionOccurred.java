@@ -1,6 +1,7 @@
 package com.uweeldteam;
 
 import sun.swing.SwingUtilities2;
+import uweellibs.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
@@ -16,11 +17,17 @@ public class ExceptionOccurred {
     public ExceptionOccurred(Throwable e) {
         final JFrame exceptionWindow = new JFrame("Возникло исключение!");
         exceptionWindow.setSize(300, 500);
-        JLabel text = new JLabel((String.format("<html>App version : 0.1 <br>%s<br>%s<br>exception occurred in <br> {4}%s<br>Возникла исключительная ситуация, которую я не продумал!<br>Вы можете отправить нам лог ошибки<br>Мы намного быстрее её исправим<br>Так же вы можете попробовать продолжить работу программы<br>Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>", new Date().toString(), e.getLocalizedMessage(), Arrays.toString(
+        JLabel text = new JLabel((String.format("<html>App version : 0.1 " + HTML.enter +
+                "%s" + HTML.enter + "%s" +
+                HTML.enter + "exception occurred in " +
+                HTML.enter + " %s " + HTML.enter + "Возникла исключительная ситуация, которую я не продумал!" +
+                HTML.enter + "Вы можете отправить нам лог ошибки" + HTML.enter + "Мы намного быстрее её исправим" + HTML.enter
+                + "Так же вы можете попробовать продолжить работу программы" + HTML.enter +
+                "Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>", new Date().toString(), e.getLocalizedMessage(), Arrays.toString(
                 e.getStackTrace()).substring(1, Arrays.toString(
-                e.getStackTrace()).length() - 1).replaceAll("\n", "<br>").
-                replaceAll(",", "<br>   at "))).
-                replaceAll(" ", "&nbsp;"));
+                e.getStackTrace()).length() - 1).replaceAll("\n", HTML.enter).
+                replaceAll(",",  HTML.enter + "   at "))).
+                replaceAll(" ", HTML.space));
         text.setVerticalAlignment(1);
         text.setHorizontalAlignment(2);
         text.setForeground(Color.RED);

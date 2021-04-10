@@ -76,10 +76,6 @@ public class Engine extends MonoBehaviour {
         private String lastMessage = "";
         private static String text = "";
 
-        private static class HTMLSymbols {
-            final static String enter = "<br>", space = "&nbsp;";
-        }
-
         public ConsoleWindow(String title, int weight, int height) {
             try {
                 window = new JFrame();
@@ -186,11 +182,11 @@ public class Engine extends MonoBehaviour {
                         new WaitForSeconds(0.05F);
                         times++;
                         if (times > 10 && times < 20) {
-                            console.setText("<html>" + defaultText() + HTMLSymbols.space
-                                    + text.replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space).replaceAll(" ", HTMLSymbols.space) + "</html>");
+                            console.setText("<html>" + defaultText() + HTML.space
+                                    + text.replaceAll("\n", HTML.enter + ">" + HTML.space).replaceAll(" ", HTML.space) + "</html>");
                         } else {
-                            console.setText("<html>" + defaultText() + HTMLSymbols.space
-                                    + text.replaceAll(" ", HTMLSymbols.space).replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space) + "|</html>");
+                            console.setText("<html>" + defaultText() + HTML.space
+                                    + text.replaceAll(" ", HTML.space).replaceAll("\n", HTML.enter + ">" + HTML.space) + "|</html>");
                         }
 
                         if (times == 20) {
@@ -223,7 +219,7 @@ public class Engine extends MonoBehaviour {
         }
 
         static void FormatText() {
-            console.setText("<html>" + defaultText() + HTMLSymbols.space + text.replaceAll("\n", HTMLSymbols.enter + ">" + HTMLSymbols.space).replaceAll(" ", HTMLSymbols.space) + "</html>");
+            console.setText("<html>" + defaultText() + HTML.space + text.replaceAll("\n", HTML.enter + ">" + HTML.space).replaceAll(" ", HTML.space) + "</html>");
             scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
         }
 
