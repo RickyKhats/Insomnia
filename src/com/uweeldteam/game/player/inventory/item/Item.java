@@ -31,7 +31,8 @@ public enum Item {
     smallAllowance(2.1F, 2, new Range(10, 40), new Range(10, 40), new Range(0, 2), new Range(0, 1), "Маленький паёк", "Маленький паёк"),
     schoolBackpack(4.0F, new Range(0, 1), (byte) 5, (short) 25, "Школьный рюкзак", "Школьный рюкзак"),
     fabricBackpack(4.0F, new Range(0, 2), (byte) 7, (short) 30, new ArrayList<>(Collections.singletonList(new Craft(fabric))), "Тканевый рюкзак", "Тканевый рюкзак"),
-    ironKnife(1.2F, new Range(5, 17), "Нож", "Нож");
+    ironKnife(1.2F, new Range(5, 17), "Нож", "Нож"),
+    fabricPouch(1.2F, new Range(0, 1), (byte) 2, (short) 4, "Тканевый подсумок", "Тканевый подсумок");
 
     ArrayList<String> names = new ArrayList<>();
     Item.ItemType type;

@@ -69,12 +69,12 @@ public class Engine extends MonoBehaviour {
     }
 
     static class ConsoleWindow extends Console {
-        JFrame window;
         static JLabel console;
-        JPanel background;
         static JScrollPane scroll;
-        private String lastMessage = "";
         private static String text = "";
+        JFrame window;
+        JPanel background;
+        private String lastMessage = "";
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
@@ -201,7 +201,7 @@ public class Engine extends MonoBehaviour {
                     {
                         try {
                             allTime = (Time) PlayerPrefs.GetObject("allTime", Time.class);
-                        } catch (NullPointerException e){
+                        } catch (NullPointerException e) {
                             allTime = new Time();
                         }
                     }
@@ -223,20 +223,6 @@ public class Engine extends MonoBehaviour {
             scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
         }
 
-        public void Print(Object... objects) {
-            for (String Text : Replace(objects)) {
-                text = String.format("%s%s", text, Text);
-            }
-            new Thread(() -> {
-                new WaitForSeconds(0.05F);
-                FormatText();
-            }).start();
-        }
-
-        public void Close() {
-            this.window.setVisible(false);
-        }
-
         static String defaultText() {
             try {
                 return com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.normal ? "Город -> " : (com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.fight ? "Бой -> " : "Мёртв -> ");
@@ -253,6 +239,20 @@ public class Engine extends MonoBehaviour {
                 new WaitForSeconds(0.07F);
                 FormatText();
             })).start();
+        }
+
+        public void Print(Object... objects) {
+            for (String Text : Replace(objects)) {
+                text = String.format("%s%s", text, Text);
+            }
+            new Thread(() -> {
+                new WaitForSeconds(0.05F);
+                FormatText();
+            }).start();
+        }
+
+        public void Close() {
+            this.window.setVisible(false);
         }
     }
 }

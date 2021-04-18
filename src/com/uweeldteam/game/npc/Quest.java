@@ -1,11 +1,15 @@
 package com.uweeldteam.game.npc;
 
+import com.uweeldteam.Main;
+import com.uweeldteam.game.player.Player;
+
 public class Quest {
+
+    public boolean isCompleted;
 
     private QuestPart[] questParts;
 
     public Quest(QuestPart[] questParts){
-
         this.questParts = questParts;
     }
 
@@ -14,24 +18,29 @@ public class Quest {
     }
 
 
-    public class QuestPart{
-
+    public static class QuestPart {
+        Part part;
+        public QuestPart(Part part){
+            this.part = part;
+        }
         //балванка
-        class Part { }
+        class Part {
 
-        public class Dialog extends Part{
-            String text;
-            boolean isPlayer;
         }
 
-        public class Action extends Part{
+        public abstract class Dialog extends Part {
+            String text;
+            String subjectName = Main.Engine().Game().Player().Stats().name;
+        }
+
+        public class Action extends Part {
             Task task;
         }
     }
 
     public abstract class Task {
-        abstract void Completed();
-        abstract void GetQuest();
+        abstract void Complete();
+        abstract void Start();
     }
 
 }

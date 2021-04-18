@@ -4,6 +4,7 @@ import com.uweeldteam.Engine;
 import com.uweeldteam.Engine.GameState;
 import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.game.fight.Fight;
+import com.uweeldteam.game.npc.Quest;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
@@ -15,6 +16,7 @@ import uweellibs.*;
 import java.util.ArrayList;
 
 public class Game extends MonoBehaviour {
+
     public static boolean canAction = true;
     public GameState gameState;
     public Fight fight;
@@ -111,7 +113,7 @@ public class Game extends MonoBehaviour {
                 switch (messages.get(0)) {
                     case "получить":
                         Slot got = StringToItem(messages);
-                        if(got == null) {
+                        if (got == null) {
                             Engine.Println("Такого предмета нет.");
                             break;
                         }
@@ -224,23 +226,63 @@ public class Game extends MonoBehaviour {
         Engine.Println("Save completed!");
     }
 
-    public Slot StringToItem(ArrayList<String> messages){
-            for (int itemId = 0, value = 1; itemId < this.Player().Inventory().AllItems().length; itemId++) {
-                StringBuilder itemName = new StringBuilder();
+    public Slot StringToItem(ArrayList<String> messages) {
+        for (int itemId = 0, value = 1; itemId < this.Player().Inventory().AllItems().length; itemId++) {
+            StringBuilder itemName = new StringBuilder();
 
-                for (int messageId = 1; messageId < messages.size(); messageId++) {
-                    try {
-                        value = Integer.parseInt(messages.get(messageId));
-                    } catch (Exception objectIsString) {
-                        itemName.append(messages.get(messageId));
-                    }
+            for (int messageId = 1; messageId < messages.size(); messageId++) {
+                try {
+                    value = Integer.parseInt(messages.get(messageId));
+                } catch (Exception objectIsString) {
+                    itemName.append(messages.get(messageId));
                 }
-                Item item = this.Player().Inventory().AllItems()[itemId];
-                if (itemName.toString().equals(item.Names(0).replaceAll(" ", "").toLowerCase()) || itemName.toString().equals(item.Names(1).replaceAll(" ", "").toLowerCase())) {
-                    return new Slot(item, value);
-                }
-                Console.Println(item, itemName);
             }
+            Item item = this.Player().Inventory().AllItems()[itemId];
+            if (itemName.toString().equals(item.Names(0).replaceAll(" ", "").toLowerCase()) || itemName.toString().equals(item.Names(1).replaceAll(" ", "").toLowerCase())) {
+                return new Slot(item, value);
+            }
+            Console.Println(item, itemName);
+        }
         return null;
+    }
+
+    public class Acts {
+
+        public Act One = new One();
+
+        abstract class Act { }
+
+        public class One extends Act {
+            public Quest prologue = new Quest(new Quest.QuestPart[]{
+                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                        public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся.";
+                    }) {
+                    },
+                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                        public final String text = "Губы были сухие, казалось что я очень много выпил вчера.";
+                    }) {
+                    }
+            });
+            public Quest first = new Quest(new Quest.QuestPart[]{
+                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                        public final String text = "Начало";
+                    }) {
+                    }
+            });
+
+            public Quest prologue() {
+                return prologue;
+            }
+
+        }
+
+        class Two {
+            public Quest first = new Quest(new Quest.QuestPart[]{
+                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                        public final String text = "Начало";
+                    }) {
+                    }
+            });
+        }
     }
 }

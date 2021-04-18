@@ -1,6 +1,7 @@
 package com.uweeldteam.game.player.inventory;
 
 import com.uweeldteam.Engine;
+import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.Main;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.item.Item;
@@ -50,6 +51,22 @@ public class Inventory {
         if (Pouch().item != nullItem)
             containers.add(Pouch());
         return containers;
+    }
+
+    public static int FindFirstAvailableSlot(Slot slot, ArrayList<Slot> slots) {
+        int firstFree = -1;
+
+        for (int i = 0; i < slots.size(); ++i) {
+            if (slots.get(i).Item().equals(slot.Item()) && slots.get(i).Value() != slots.get(i).Item().MaxStack()) {
+                return i;
+            }
+
+            if (slots.get(i).Item() == nullItem && firstFree == -1) {
+                firstFree = i;
+            }
+        }
+
+        return firstFree;
     }
 
     public Item[] AllItems() {
@@ -142,6 +159,18 @@ public class Inventory {
 
     }
 
+    public void MoveItem(Slot slot, Container from, Container to) {
+        boolean added = false;
+        if (from.Contains(slot))
+            added = to.TryAdd(slot);
+        if (added) {
+            from.DeleteItems(slot);
+            Engine.Println("Вы переместили " + slot.toString() + " из " + from + " в " + to);
+        } else {
+            new ExceptionOccurred(new RuntimeException());
+        }
+    }
+
     public boolean Contains(Item item) {
         for (int i = 0; i < containers().size(); i++) {
             Console.Println(containers().get(i).item.Slots().toString());
@@ -151,22 +180,6 @@ public class Inventory {
         }
 
         return false;
-    }
-
-    private int FindFirstAvailableSlot(Slot slot, ArrayList<Slot> slots) {
-        int firstFree = -1;
-
-        for (int i = 0; i < slots.size(); ++i) {
-            if (slots.get(i).Item().equals(slot.Item()) && slots.get(i).Value() != slots.get(i).Item().MaxStack()) {
-                return i;
-            }
-
-            if (slots.get(i).Item() == nullItem && firstFree == -1) {
-                firstFree = i;
-            }
-        }
-
-        return firstFree;
     }
 
     String percent(float str) {
@@ -182,17 +195,15 @@ public class Inventory {
     }
 
     public String toString() {
-        return "Инвентарь:\nРуки(" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + ")\n"
+        return "Инвентарь:\nРуки (" + percent(Player().AllHandsMass()) + "/" + percent(Player().MaxHandsMass()) + " Kg)\n"
                 + toString(Player().Hands())
-                + ((Backpack().item != nullItem
-                || Pouch().item != nullItem
-                || Torso().item != nullItem
-                || Pants().item != nullItem)
-                ? ("\n")
-                : (""))
+                + ((Backpack().item != nullItem) ? ("\n") : (""))
                 + toString(Player().Backpack())
+                + ((Pouch().item != nullItem) ? ("\n") : (""))
                 + toString(Player().Pouch())
+                + ((Torso().item != nullItem) ? ("\n") : (""))
                 + toString(Player().Torso())
+                + ((Pants().item != nullItem) ? ("\n") : (""))
                 + toString(Player().Pants());
     }
 
@@ -200,7 +211,7 @@ public class Inventory {
         StringBuilder returns = new StringBuilder();
         if (item != nullItem) {
             returns = new StringBuilder(
-                    item.Names(0) + "(" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + ") \n");
+                    item.Names(0) + " (" + String.format("%.2f", item.AllMass()) + "/" + String.format("%.2f", item.MaxMass()) + " Kg)\n");
             int id = 1;
 
             for (Slot slot : item.Slots()) {
@@ -236,6 +247,39 @@ public class Inventory {
 
         public float MaxMass() {
             return ((item != nullItem) ? item.MaxMass() : Main.Engine().Game().Player().MaxHandsMass());
+        }
+
+        public boolean Contains(Slot slot) {
+            Slot remains = slot;
+            for (Slot currentSlot : slots) {
+                if (currentSlot.Item() == slot.Item())
+                    remains.Value((short) (remains.Value() - currentSlot.Value()));
+            }
+            return remains.Value() <= 0;
+        }
+
+        public boolean TryAdd(Slot slot) {
+            int id = Inventory.FindFirstAvailableSlot(slot, slots);
+            if (id != -1) {
+                slots.add(id, slot);
+                return true;
+            }
+            return false;
+        }
+
+        public void DeleteItems(Slot slot) {
+            Slot remains = slot;
+            for (Slot currentSlot : slots) {
+                if (remains.Value() > 0)
+                    if (currentSlot.Value() <= remains.Value()) {
+                        remains.Value((short) (remains.Value() - currentSlot.Value()));
+                        currentSlot.Value((short) 0);
+                    } else {
+                        currentSlot.Value((short) (currentSlot.Value() - remains.Value()));
+                        remains.Value((short) 0);
+                    }
+                else break;
+            }
         }
     }
 }

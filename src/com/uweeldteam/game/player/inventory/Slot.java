@@ -31,9 +31,7 @@ public class Slot {
         this.value = value;
     }
 
-    public short Value() {
-        return this.value;
-    }
+    public short Value() {return this.value;}
 
     public Item Item() {
         return this.item;

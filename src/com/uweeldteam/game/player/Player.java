@@ -32,9 +32,11 @@ public class Player extends MonoBehaviour {
         this.pants = Item.nullItem;
         this.torso = Item.nullItem;
         this.firstWeapon = Item.ironAxe;
-        this.pouch = Item.nullItem;
+        this.pouch = Item.fabricPouch;
         this.secondWeapon = Item.nullItem;
         this.stats = new Player.Stats();
+
+
     }
 
     public ArrayList<Slot> Hands() {
