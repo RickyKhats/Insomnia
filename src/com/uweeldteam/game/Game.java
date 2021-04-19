@@ -13,11 +13,13 @@ import com.uweeldteam.game.player.inventory.item.Item.ItemType;
 import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Game extends MonoBehaviour {
 
     public static boolean canAction = true;
+
     public GameState gameState;
     public Fight fight;
     Player player;
@@ -25,6 +27,14 @@ public class Game extends MonoBehaviour {
     public Game() {
         this.gameState = GameState.normal;
         this.Player(new Player());
+        canAction = false;
+        for(int i = 0; i < Acts.first.quests[0].QuestParts().length; i++)
+        {
+            if(Engine.ReadEnter()) {
+                continue;
+            }
+            Engine.Println(Acts.first.quests[0].QuestParts()[i].Part().Text());
+        }
     }
 
     void CountHunger() {
@@ -246,43 +256,30 @@ public class Game extends MonoBehaviour {
         return null;
     }
 
-    public class Acts {
+    public static class Acts {
 
-        public Act One = new One();
+        public static Act first = new Act(new Quest[]{
+                new Quest(new Quest.QuestPart[]{ new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся."; public String Text() { return text; } }) { }, new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Губы были сухие, казалось что я очень много выпил вчера."; public String Text() { return text; } }) { } }),
+                new Quest(new Quest.QuestPart[]{ new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Начало"; public String Text() { return text; } }) { } })
+        });
+        public static Act second = new Act(new Quest[]{
+                new Quest(new Quest.QuestPart[]{
+                        new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                            public final String text = "Начало";
 
-        abstract class Act { }
+                            public String Text() {
+                                return text;
+                            }
+                        }) {
+                        }})}) {
+        };
+    }
 
-        public class One extends Act {
-            public Quest prologue = new Quest(new Quest.QuestPart[]{
-                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
-                        public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся.";
-                    }) {
-                    },
-                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
-                        public final String text = "Губы были сухие, казалось что я очень много выпил вчера.";
-                    }) {
-                    }
-            });
-            public Quest first = new Quest(new Quest.QuestPart[]{
-                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
-                        public final String text = "Начало";
-                    }) {
-                    }
-            });
+    static class Act {
+        public Quest[] quests;
 
-            public Quest prologue() {
-                return prologue;
-            }
+        public Act(Quest[] quests) {
 
-        }
-
-        class Two {
-            public Quest first = new Quest(new Quest.QuestPart[]{
-                    new Quest.QuestPart(new Quest.QuestPart.Dialog() {
-                        public final String text = "Начало";
-                    }) {
-                    }
-            });
         }
     }
 }

@@ -1,7 +1,6 @@
 package uweellibs;
 
 import com.uweeldteam.ExceptionOccurred;
-import com.uweeldteam.Main;
 
 public abstract class MonoBehaviour {
 

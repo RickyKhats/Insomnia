@@ -1,16 +1,14 @@
 package com.uweeldteam;
 
 import com.uweeldteam.game.Game;
-import com.uweeldteam.game.fight.Fight;
-import uweellibs.Console;
 import uweellibs.*;
+import uweellibs.Console;
+import uweellibs.graphics.*;
+import uweellibs.graphics.Window;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.*;
-import java.util.Arrays;
 
 public class Engine extends MonoBehaviour {
     static Engine.ConsoleWindow window = new Engine.ConsoleWindow("Insomnia - cmd", 800, 420);
@@ -50,6 +48,10 @@ public class Engine extends MonoBehaviour {
         ConsoleWindow.Println(text);
     }
 
+    public static boolean ReadEnter() {
+        return window.ReadKey(KeyCode.enter);
+    }
+
     private void Game(Game game) {
         this.game = game;
     }
@@ -69,104 +71,30 @@ public class Engine extends MonoBehaviour {
     }
 
     static class ConsoleWindow extends Console {
-        static JLabel console;
-        static JScrollPane scroll;
+        static TextView console;
+        static Scroll scroll;
         private static String text = "";
-        JFrame window;
-        JPanel background;
+        Window window;
         private String lastMessage = "";
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
-                window = new JFrame();
-                background = new JPanel();
-                window.add(background);
-                console = new JLabel();
-                scroll = new JScrollPane(console, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-                background.add(scroll);
-                background.setLayout(new BorderLayout());
-                window.setLayout(new BorderLayout());
-                window.setSize(weight, height);
-                window.setResizable(false);
-                window.addKeyListener(new KeyListener() {
-                    boolean CheckChar(char ch) {
-                        String character = String.valueOf(ch).toLowerCase();
-                        return Arrays.asList(Codec.ru).contains(character) || Arrays.asList(Codec.en).contains(character) || Arrays.asList(Codec.integers).contains(character) || Arrays.asList(Codec.forbiddenCharacters).contains(character) || character.equals(String.valueOf('"'));
-                    }
+                window = new Window("", 1200, 1000);
+                console = new TextView("", scroll.Position(), scroll.Size());
+                scroll = new Scroll();
+                        //(console, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+                window.Add(scroll, new Vector2(0, 0));
+                window.Size(weight, height);
+                window.Resizable(false);
+                window.BackgroundColor(Color.BLACK);
 
-                    public void keyPressed(KeyEvent keyEvent) {
-                        switch (keyEvent.getKeyCode()) {
-                            case KeyEvent.VK_BACK_SPACE:
-                                if (lastMessage.length() > 0) {
-                                    if (keyEvent.isControlDown()) {
-                                        if (lastMessage.lastIndexOf(" ") != -1) {
-                                            text = text.substring(0, text.lastIndexOf(" "));
-                                            lastMessage = lastMessage.substring(0, lastMessage.lastIndexOf(" "));
-                                        } else {
-                                            text = text.substring(0, text.length() - lastMessage.length());
-                                            lastMessage = "";
-                                        }
-                                    } else {
-                                        text = text.substring(0, text.length() - 1);
-                                        lastMessage = lastMessage.substring(0, lastMessage.length() - 1);
-                                    }
-                                }
-                                break;
-                            case KeyEvent.VK_ENTER:
-                                Print("\n");
-                                switch (Main.Engine().Game().gameState) {
-                                    case fight:
-                                        Fight.ReadCommand(lastMessage);
-                                        break;
-                                    case normal:
-                                        Main.Engine().Game().ReadCommand(lastMessage);
-                                        break;
-                                    case death:
-                                        if ("новая игра".equals(lastMessage)) {
-                                            Main.main(new String[]{"newGame"});
-                                            return;
-                                        }
-                                        Println("Вы мертвы, начните новую игру");
-                                        break;
-                                    default:
-                                        throw new IllegalStateException();
-                                }
-                                text = text.substring(0, text.length() - 1) + "<br>";
-                                ConsoleWindow.this.Print(defaultText());
-                                ConsoleWindow.this.lastMessage = "";
-                                break;
-                            case KeyEvent.VK_SPACE:
-                                ConsoleWindow.this.Print(" ");
-                                lastMessage += keyEvent.getKeyChar();
-                            default:
-                                if (this.CheckChar(keyEvent.getKeyChar())) {
-                                    Print(keyEvent.getKeyChar());
-                                    lastMessage += keyEvent.getKeyChar();
-                                }
-                        }
-
-                    }
-
-                    public void keyTyped(KeyEvent keyEvent) {
-                    }
-
-                    public void keyReleased(KeyEvent keyEvent) {
-                    }
-                });
-                background.setSize(window.getSize());
-                scroll.setLayout(new ScrollPaneLayout());
-                background.setBackground(Color.BLACK);
-                scroll.getVerticalScrollBar().setBackground(Color.BLACK);
-                scroll.getHorizontalScrollBar().setBackground(Color.BLACK);
-                scroll.getVerticalScrollBar().getFocusCycleRootAncestor().setForeground(Color.BLACK);
-                scroll.getViewport().setBackground(Color.BLACK);
-                console.setForeground(Color.GREEN);
+                console.TextColor(Color.GREEN);
                 scroll.setSize(background.getWidth() + 20, background.getHeight() - 38);
                 scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
                 console.setSize(scroll.getSize());
                 console.setVerticalAlignment(1);
                 console.setHorizontalAlignment(2);
-                scroll.getVerticalScrollBar().setUnitIncrement(16);
+                scroll.ShearRate(16);
 
                 try {
                     console.setFont(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13.0F));
@@ -253,6 +181,10 @@ public class Engine extends MonoBehaviour {
 
         public void Close() {
             this.window.setVisible(false);
+        }
+
+        public boolean ReadKey(KeyCode keyCode) {
+            return window.ReadKey(keyCode);
         }
     }
 }

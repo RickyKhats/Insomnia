@@ -71,13 +71,13 @@ public class Button extends WindowComponent {
         return this;
     }
 
-    public Button Size(int height, int width) {
+    public Button Size(int width, int height) {
         button.setSize(new Dimension(width, height));
         return this;
     }
 
-    public Dimension Size() {
-        return button.getSize();
+    public Vector2 Size() {
+        return new Vector2(button.getSize().width, button.getSize().height);
     }
 
     public Button Position(int x, int y) {
