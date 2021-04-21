@@ -4,7 +4,9 @@ import com.uweeldteam.Engine;
 import com.uweeldteam.Engine.GameState;
 import com.uweeldteam.ExceptionOccurred;
 import com.uweeldteam.game.fight.Fight;
-import com.uweeldteam.game.npc.Quest;
+import com.uweeldteam.game.quest.Dialog;
+import com.uweeldteam.game.quest.Quest;
+import com.uweeldteam.game.quest.QuestPart;
 import com.uweeldteam.game.player.Player;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.craftsystem.CraftSystem;
@@ -13,7 +15,6 @@ import com.uweeldteam.game.player.inventory.item.Item.ItemType;
 import org.jetbrains.annotations.NotNull;
 import uweellibs.*;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class Game extends MonoBehaviour {
@@ -259,19 +260,33 @@ public class Game extends MonoBehaviour {
     public static class Acts {
 
         public static Act first = new Act(new Quest[]{
-                new Quest(new Quest.QuestPart[]{ new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся."; public String Text() { return text; } }) { }, new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Губы были сухие, казалось что я очень много выпил вчера."; public String Text() { return text; } }) { } }),
-                new Quest(new Quest.QuestPart[]{ new Quest.QuestPart(new Quest.QuestPart.Dialog() { public final String text = "Начало"; public String Text() { return text; } }) { } })
+                new Quest(new QuestPart[]{
+                        new QuestPart(new Dialog() {
+                            public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся.";
+                            public String Text() {
+                                return text;
+                            } }) { },
+                        new QuestPart(new Dialog() {
+                            public final String text = "Губы были сухие, казалось что я очень много выпил вчера.";
+                            public String Text() {
+                                return text;
+                            } }) { } }),
+                new Quest(new QuestPart[]{
+                        new QuestPart(new Dialog() {
+                            public final String text = "Начало";
+                            public String Text() {
+                                return text;
+                            } }) { } })
         });
         public static Act second = new Act(new Quest[]{
-                new Quest(new Quest.QuestPart[]{
-                        new Quest.QuestPart(new Quest.QuestPart.Dialog() {
+                new Quest(new QuestPart[]{
+                        new QuestPart(new Dialog() {
                             public final String text = "Начало";
 
                             public String Text() {
                                 return text;
                             }
-                        }) {
-                        }})}) {
+                        }) { }})}) {
         };
     }
 
@@ -279,7 +294,7 @@ public class Game extends MonoBehaviour {
         public Quest[] quests;
 
         public Act(Quest[] quests) {
-
+            this.quests = quests;
         }
     }
 }

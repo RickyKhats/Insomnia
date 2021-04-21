@@ -15,6 +15,7 @@ import static java.awt.BorderLayout.SOUTH;
 
 public class ExceptionOccurred {
     public ExceptionOccurred(Throwable e) {
+        e.printStackTrace();
         final JFrame exceptionWindow = new JFrame("Возникло исключение!");
         exceptionWindow.setSize(300, 500);
         JLabel text = new JLabel((String.format("<html>App version : 0.1 " + HTML.enter +

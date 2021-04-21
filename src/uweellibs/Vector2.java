@@ -24,4 +24,8 @@ public class Vector2 {
     public void Y(int y) {
         this.y = y;
     }
+
+    public String toString(){
+        return X() + "/" + Y();
+    }
 }

@@ -1,6 +1,4 @@
-package uweellibs;
-
-import uweellibs.graphics.KeyListener;
+package uweellibs.graphics;
 
 public class Input {
     public Input(KeyListener keyListener) {

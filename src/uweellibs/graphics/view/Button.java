@@ -1,7 +1,10 @@
-package uweellibs.graphics;
+package uweellibs.graphics.view;
 
 import com.uweeldteam.ExceptionOccurred;
 import uweellibs.Vector2;
+import uweellibs.graphics.OnClickListener;
+import uweellibs.graphics.Sprite;
+import uweellibs.graphics.Themes;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,7 +15,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
-public class Button extends WindowComponent {
+public class Button extends View {
 
     JButton button = new JButton();
     private OnClickListener onRightClick, onLeftClick;
@@ -81,7 +84,7 @@ public class Button extends WindowComponent {
     }
 
     public Button Position(int x, int y) {
-
+        button.setLocation(x, y);
         return this;
     }
 
@@ -95,6 +98,10 @@ public class Button extends WindowComponent {
 
     public Sprite Sprite() {
         return sprite;
+    }
+
+    public View Theme(Themes theme) {
+        return this;
     }
 
     public Button BackgroundResource(String path) {

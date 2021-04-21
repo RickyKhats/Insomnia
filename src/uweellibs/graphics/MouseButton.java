@@ -1,4 +1,4 @@
-package uweellibs;
+package uweellibs.graphics;
 
 public enum MouseButton {
     right,
