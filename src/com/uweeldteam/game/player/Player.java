@@ -11,6 +11,7 @@ import com.uweeldteam.game.player.inventory.Inventory;
 import com.uweeldteam.game.player.inventory.Slot;
 import com.uweeldteam.game.player.inventory.item.Item;
 import com.uweeldteam.game.player.inventory.item.Item.ItemType;
+import uweellibs.Debug;
 import uweellibs.MonoBehaviour;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class Player extends MonoBehaviour {
     private Item secondWeapon;
 
     public Player() {
+        Debug.Log("Player start initializing");
         this.backpack = Item.fabricBackpack;
         this.pants = Item.nullItem;
         this.torso = Item.nullItem;
@@ -35,8 +37,7 @@ public class Player extends MonoBehaviour {
         this.pouch = Item.fabricPouch;
         this.secondWeapon = Item.nullItem;
         this.stats = new Player.Stats();
-
-
+        Debug.Log("Player initialized");
     }
 
     public ArrayList<Slot> Hands() {

@@ -1,6 +1,7 @@
 package uweellibs.graphics;
 
 import uweellibs.Vector2;
+import uweellibs.graphics.view.Background;
 import uweellibs.graphics.view.View;
 
 import javax.swing.*;
@@ -64,17 +65,5 @@ public class Window {
     public void Title(String title) {
         window.setTitle(title);
     }
-
-    class Background extends JPanel {
-        public Background(Color color) {
-            setLayout(null);
-            this.setBackground(color);
-        }
-
-        public void add(View view){
-            this.add(view.get());
-        }
-    }
-
 
 }

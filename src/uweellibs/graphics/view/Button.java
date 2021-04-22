@@ -1,6 +1,7 @@
 package uweellibs.graphics.view;
 
 import com.uweeldteam.ExceptionOccurred;
+import uweellibs.Debug;
 import uweellibs.Vector2;
 import uweellibs.graphics.OnClickListener;
 import uweellibs.graphics.Sprite;
@@ -18,6 +19,9 @@ import java.io.IOException;
 public class Button extends View {
 
     JButton button = new JButton();
+    {
+        Debug.Log("");
+    }
     private OnClickListener onRightClick, onLeftClick;
     private Sprite sprite = new Sprite();
 

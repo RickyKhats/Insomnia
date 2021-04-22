@@ -15,7 +15,6 @@ import static java.awt.BorderLayout.SOUTH;
 
 public class ExceptionOccurred {
     public ExceptionOccurred(Throwable e) {
-        e.printStackTrace();
         final JFrame exceptionWindow = new JFrame("Возникло исключение!");
         exceptionWindow.setSize(300, 500);
         JLabel text = new JLabel((String.format("<html>App version : 0.1 " + HTML.enter +
@@ -24,11 +23,12 @@ public class ExceptionOccurred {
                 HTML.enter + " %s " + HTML.enter + "Возникла исключительная ситуация, которую я не продумал!" +
                 HTML.enter + "Вы можете отправить нам лог ошибки" + HTML.enter + "Мы намного быстрее её исправим" + HTML.enter
                 + "Так же вы можете попробовать продолжить работу программы" + HTML.enter +
-                "Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>", new Date().toString(), e.getLocalizedMessage(), Arrays.toString(
-                e.getStackTrace()).substring(1, Arrays.toString(
-                e.getStackTrace()).length() - 1).replaceAll("\n", HTML.enter).
+                "Это может привести к ещё большим ошибкам, и, даже повреждению сохранений игры.</html>", new Date().toString(),
+                e,
+                Arrays.toString(e.getStackTrace()).substring(1, Arrays.toString(e.getStackTrace()).length() - 1).replaceAll("\n", HTML.enter).
                 replaceAll(",",  HTML.enter + "   at "))).
                 replaceAll(" ", HTML.space));
+        Debug.ErrorLog(text.getText().replaceAll(HTML.enter, "\n").replaceAll(HTML.space, " "));
         text.setVerticalAlignment(1);
         text.setHorizontalAlignment(2);
         text.setForeground(Color.RED);

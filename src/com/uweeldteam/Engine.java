@@ -2,48 +2,32 @@ package com.uweeldteam;
 
 import com.uweeldteam.game.Game;
 import uweellibs.*;
-import uweellibs.Console;
-import uweellibs.graphics.*;
+import uweellibs.graphics.KeyCode;
 import uweellibs.graphics.Window;
 import uweellibs.graphics.view.ScrollView;
 import uweellibs.graphics.view.TextView;
 
 import java.awt.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class Engine extends MonoBehaviour {
     static Engine.ConsoleWindow window = new Engine.ConsoleWindow("Insomnia - cmd", 800, 420);
     Game game;
 
     public Engine(boolean newGame) {
+        Debug.Log("Engine start initializing");
         if (newGame) {
             Game(new Game());
         } else {
-            try{
+            try {
                 Game((Game) PlayerPrefs.GetObject("Game", Game.class));
-            } catch (RuntimeException GameHasNotSaved){
+            } catch (RuntimeException GameHasNotSaved) {
                 Game(new Game());
             }
         }
-
-        File file = new File("Engine.json");
-        boolean fileCreated = false;
-
-        try {
-            fileCreated = file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (fileCreated) {
-            try {
-                PrintWriter printWriter = new PrintWriter(file);
-                printWriter.println(Json.ToJson(this));
-                printWriter.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        DateTime date = new DateTime();
+        Debug.Log("Engine initialized");
     }
 
     public static void Println(Object... text) {
@@ -75,16 +59,15 @@ public class Engine extends MonoBehaviour {
     static class ConsoleWindow extends Console {
         TextView console;
         ScrollView scroll;
-        private String text = "";
         Window window;
+        private String text = "";
         private String lastMessage = "";
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
                 window = new Window(title, 1200, 1000);
-                scroll = new ScrollView(new Vector2(weight, height),new Vector2(0, 0));
+                scroll = new ScrollView(new Vector2(weight, height), new Vector2(0, 0));
                 console = new TextView(">", scroll.Position(), scroll.Size());
-                        //(console, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
                 window.Add(scroll);
                 scroll.Add(console);
 
@@ -150,16 +133,11 @@ public class Engine extends MonoBehaviour {
             }
         }
 
-        void FormatText() {
-            console.Text("<html>" + defaultText() + HTML.space + text.replaceAll("\n", HTML.enter + ">" + HTML.space).replaceAll(" ", HTML.space) + "</html>");
-            scroll.VerticalScrollBar().setValue(scroll.VerticalScrollBar().getMaximum());
-        }
-
         static String defaultText() {
             try {
-                return com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.normal ? "Город -> " : (com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.fight ? "Бой -> " : "Мёртв -> ");
+                return com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.normal ? " " : (com.uweeldteam.Main.Engine().Game().gameState == Engine.GameState.fight ? " " : " ");
             } catch (NullPointerException e) {
-                return "Город -> ";
+                return " ";
             }
         }
 
@@ -171,6 +149,11 @@ public class Engine extends MonoBehaviour {
                 new WaitForSeconds(0.07F);
                 Engine.window.FormatText();
             })).start();
+        }
+
+        void FormatText() {
+            console.Text("<html>" + defaultText() + HTML.space + text.replaceAll("\n", HTML.enter + ">" + HTML.space).replaceAll(" ", HTML.space) + "</html>");
+            scroll.VerticalScrollBar().setValue(scroll.VerticalScrollBar().getMaximum());
         }
 
         public void Print(Object... objects) {

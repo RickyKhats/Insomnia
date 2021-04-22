@@ -12,8 +12,7 @@ public enum KeyCode {
     }
 
     public String toString() {
-        return key.name +
-                "isPressed = " + key.isPressed;
+        return key.name + " isPressed = " + key.isPressed;
     }
 
     public String keyName(){

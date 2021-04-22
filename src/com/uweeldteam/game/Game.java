@@ -25,7 +25,8 @@ public class Game extends MonoBehaviour {
     public Fight fight;
     Player player;
 
-    public Game() {
+    public synchronized void Init() {
+        Debug.Log("Game start initializing");
         this.gameState = GameState.normal;
         this.Player(new Player());
         canAction = false;
@@ -36,6 +37,7 @@ public class Game extends MonoBehaviour {
             }
             Engine.Println(Acts.first.quests[0].QuestParts()[i].Part().Text());
         }
+        Debug.Log("Game initialized");
     }
 
     void CountHunger() {
@@ -278,15 +280,7 @@ public class Game extends MonoBehaviour {
                                 return text;
                             } }) { } })
         });
-        public static Act second = new Act(new Quest[]{
-                new Quest(new QuestPart[]{
-                        new QuestPart(new Dialog() {
-                            public final String text = "Начало";
-
-                            public String Text() {
-                                return text;
-                            }
-                        }) { }})}) {
+        public static Act second = new Act(new Quest[]{new Quest(new QuestPart[]{new QuestPart(new Dialog() {public final String text = "Начало";public String Text() { return text; }}) { }})}) {
         };
     }
 

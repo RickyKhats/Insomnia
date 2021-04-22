@@ -1,12 +1,14 @@
 package uweellibs.graphics;
 
 public class Input {
-    public Input(KeyListener keyListener) {
+    private final KeyListener keyListener;
 
+    public Input(KeyListener keyListener) {
+        this.keyListener = keyListener;
     }
 
     public boolean GetKeyDown(KeyCode keyCode){
-        return false;
+        return keyCode.isPressed();
     }
     public boolean MousePressed(MouseButton mouseButton){
         return false;

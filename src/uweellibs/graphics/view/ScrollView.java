@@ -9,7 +9,8 @@ import java.awt.*;
 
 public class ScrollView extends View {
 
-    private final JScrollPane scroll = new JScrollPane();
+    private Background background = new Background(Color.WHITE);
+    private final JScrollPane scroll = new JScrollPane(background, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
     public ScrollView(Vector2 size, Vector2 position) {
         Size(size);
@@ -19,7 +20,7 @@ public class ScrollView extends View {
     }
 
     public ScrollView Add(View component) {
-        scroll.add(component.get());
+        background.add(component.get());
         return this;
     }
 
@@ -65,7 +66,7 @@ public class ScrollView extends View {
             case Darcula:
                 scroll.getVerticalScrollBar().setBackground(Color.BLACK);
                 scroll.getHorizontalScrollBar().setBackground(Color.BLACK);
-                scroll.getViewport().setBackground(Color.BLUE);
+                background.setBackground(Color.BLACK);
                 break;
         }
         return this;
