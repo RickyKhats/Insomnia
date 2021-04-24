@@ -65,16 +65,15 @@ public class Engine extends MonoBehaviour {
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
+                new AudioPlayer(new File("ambient.wav")).Play();
                 window = new Window(title, 1200, 1000);
-                scroll = new ScrollView(new Vector2(weight, height), new Vector2(0, 0));
-                console = new TextView(">", scroll.Position(), scroll.Size());
-                window.Add(scroll);
-                scroll.Add(console);
-
                 window.Size(weight, height);
+                scroll = new ScrollView(new Vector2(weight, height), new Vector2(5, 5));
+                console = new TextView("> ", scroll.Position(), scroll.Size());
+                scroll.Add(console);
+                window.Add(scroll);
                 window.Resizable(false);
                 window.BackgroundColor(Color.BLACK);
-
                 console.TextColor(Color.GREEN);
                 scroll.Size(window.Size().X() + 20, window.Size().Y() - 38);
                 scroll.VerticalScrollBar().setValue(scroll.VerticalScrollBar().getMaximum());
@@ -128,6 +127,7 @@ public class Engine extends MonoBehaviour {
                         new WaitForSeconds(1);
                     } while (true);
                 }).start();
+                Debug.Log(window.Tree());
             } catch (Exception e) {
                 new ExceptionOccurred(e);
             }

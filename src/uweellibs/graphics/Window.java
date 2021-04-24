@@ -7,6 +7,7 @@ import uweellibs.graphics.view.View;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Window {
     static ArrayList<Sprite> sprites = new ArrayList<>();
@@ -66,4 +67,7 @@ public class Window {
         window.setTitle(title);
     }
 
+    public Object Tree() {
+        return Arrays.toString(window.getContentPane().getComponents());
+    }
 }

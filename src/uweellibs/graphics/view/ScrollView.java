@@ -12,7 +12,7 @@ public class ScrollView extends View {
     private Background background = new Background(Color.WHITE);
     private final JScrollPane scroll = new JScrollPane(background, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    public ScrollView(Vector2 size, Vector2 position) {
+    public ScrollView(Vector2 position, Vector2 size) {
         Size(size);
         Position(position);
         scroll.setLayout(new ScrollPaneLayout());
@@ -20,7 +20,7 @@ public class ScrollView extends View {
     }
 
     public ScrollView Add(View component) {
-        background.add(component.get());
+        background.add(component);
         return this;
     }
 

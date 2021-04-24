@@ -1,13 +1,12 @@
 package uweellibs;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Debug extends Console {
     private static DateTime date = new DateTime();
-    private static FileManager.File logFile;
+    private static File logFile;
     private static FileWriter printWriter;
 
     static {
@@ -20,20 +19,16 @@ public class Debug extends Console {
 
     static void Now() {
         date.Now();
-        try {
-            new File("Debugs").createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        FileManager.Create("Debugs");
         FileManager.Create("Log-" + Debug.date.toString());
-        logFile = new FileManager.File("Log-" + Debug.date.toString());
+        logFile = new File("Log-" + Debug.date.toString());
     }
 
     static void Print(String message) {
         Console.Println(message);
         try {
             printWriter = new FileWriter(logFile.get(), true);
-            printWriter.write(message);
+            printWriter.write(message + "\n");
             printWriter.close();
         } catch (IOException e) {
             e.printStackTrace();

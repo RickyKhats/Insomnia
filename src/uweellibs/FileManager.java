@@ -10,9 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class FileManager {
-
-    public static boolean Exists(String path){
-        return new File(path).get().exists();
+    public static boolean Exists(String path) {
+        return new uweellibs.File(path).get().exists();
     }
 
     public static void Create(String path) {
@@ -26,7 +25,7 @@ public class FileManager {
         }
     }
 
-    public static String ReadFile(File file) {
+    public static String ReadFile(uweellibs.File file) {
 
         try {
             return new String(Files.readAllBytes(Paths.get(file.get().getAbsolutePath())));
@@ -34,18 +33,5 @@ public class FileManager {
             e.printStackTrace();
         }
         return "";
-    }
-
-    public static class File {
-
-        java.io.File file;
-
-        public File(String path) {
-            file = new java.io.File(path);
-        }
-
-        public java.io.File get() {
-            return file;
-        }
     }
 }
