@@ -65,7 +65,7 @@ public class Engine extends MonoBehaviour {
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
-                new AudioPlayer(new File("ambient.wav")).Play();
+                new AudioPlayer(new File("ambient.wav")).Looping(true).Play();
                 window = new Window(title, 1200, 1000);
                 window.Size(weight, height);
                 scroll = new ScrollView(new Vector2(weight, height), new Vector2(5, 5));

@@ -12,10 +12,12 @@ public class AudioPlayer {
     public AudioPlayer(String path) {
         AudioFile(new File(path));
     }
+
     public AudioPlayer(File audioFile) {
         AudioFile(audioFile);
     }
-    void AudioFile(File audioFile){
+
+    void AudioFile(File audioFile) {
         try {
             AudioInputStream ais = AudioSystem.getAudioInputStream(audioFile.get());
             clip = AudioSystem.getClip();
@@ -28,8 +30,9 @@ public class AudioPlayer {
         }
     }
 
-    public void Looping(boolean value) {
+    public AudioPlayer Looping(boolean value) {
         loop = value;
+        return this;
     }
 
     public void Play() {
@@ -37,10 +40,12 @@ public class AudioPlayer {
             clip.start();
             new WaitForMills(clip.getMicrosecondLength() / 1000);
             if (loop) {
+                clip.setFramePosition(0);
+                clip.start();
+            } else {
                 clip.stop();
                 clip.close();
-            } else
-                clip.setFramePosition(0);
+            }
         }).start();
     }
 }
