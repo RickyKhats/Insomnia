@@ -30,12 +30,14 @@ public class Game extends MonoBehaviour {
         this.gameState = GameState.normal;
         this.Player(new Player());
         canAction = false;
-        for(int i = 0; i < Acts.first.quests[0].QuestParts().length; i++)
-        {
-            if(Engine.ReadEnter()) {
-                continue;
+        for (int i = 0; i < Acts.first.quests[0].QuestParts().length;) {
+            {
+                if (Engine.ReadEnter()) {
+                    Engine.Println(Acts.first.quests[0].QuestParts()[i].Part().Text());
+                    i++;
+                }
             }
-            Engine.Println(Acts.first.quests[0].QuestParts()[i].Part().Text());
+
         }
         Debug.Log("Game initialized");
     }
@@ -265,22 +267,38 @@ public class Game extends MonoBehaviour {
                 new Quest(new QuestPart[]{
                         new QuestPart(new Dialog() {
                             public final String text = "Сознание постепенно возвращалось ко мне, голова болела настолько сильно, что казалось будто она сейчас взорвётся.";
+
                             public String Text() {
                                 return text;
-                            } }) { },
+                            }
+                        }) {
+                        },
                         new QuestPart(new Dialog() {
                             public final String text = "Губы были сухие, казалось что я очень много выпил вчера.";
+
                             public String Text() {
                                 return text;
-                            } }) { } }),
+                            }
+                        }) {
+                        }}),
                 new Quest(new QuestPart[]{
                         new QuestPart(new Dialog() {
                             public final String text = "Начало";
+
                             public String Text() {
                                 return text;
-                            } }) { } })
+                            }
+                        }) {
+                        }})
         });
-        public static Act second = new Act(new Quest[]{new Quest(new QuestPart[]{new QuestPart(new Dialog() {public final String text = "Начало";public String Text() { return text; }}) { }})}) {
+        public static Act second = new Act(new Quest[]{new Quest(new QuestPart[]{new QuestPart(new Dialog() {
+            public final String text = "Начало";
+
+            public String Text() {
+                return text;
+            }
+        }) {
+        }})}) {
         };
     }
 

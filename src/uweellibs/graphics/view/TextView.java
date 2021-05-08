@@ -13,29 +13,34 @@ public class TextView extends View {
 
     public TextView() {
         this.text = new JLabel();
-        Size(15,45);
+        Size(15, 45);
         Position(new Vector2(0, 0));
     }
+
     public TextView(Vector2 position) {
         this.text = new JLabel();
         Size(15, 45);
         Position(position);
     }
+
     public TextView(Vector2 position, Vector2 size) {
         this.text = new JLabel();
         Size(size);
         Position(position);
     }
+
     public TextView(String text) {
         this.text = new JLabel(text);
         Size(15, 45);
-        Position(0,0);
+        Position(0, 0);
     }
+
     public TextView(String text, Vector2 position) {
         this.text = new JLabel();
         Size(15, 45);
         Position(position);
     }
+
     public TextView(String text, Vector2 position, Vector2 size) {
         this.text = new JLabel();
         Size(size);
@@ -43,12 +48,16 @@ public class TextView extends View {
     }
 
 
-    public void Size(Vector2 size) {
+    public TextView Size(Vector2 size) {
         text.setSize(size.X(), size.Y());
+        return this;
+
     }
 
-    private void Position(Vector2 position) {
+    private TextView Position(Vector2 position) {
         text.setLocation(position.X(), position.Y());
+        return this;
+
     }
 
     public TextView Size(int width, int height) {
@@ -96,7 +105,7 @@ public class TextView extends View {
     }
 
     public TextView Font(Font font) {
-        text.setFont(font);
+        text.setFont(font.get());
         return this;
     }
 

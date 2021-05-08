@@ -1,5 +1,7 @@
 package uweellibs.graphics;
 
+import uweellibs.Debug;
+
 import java.awt.event.KeyEvent;
 
 import static java.awt.event.KeyEvent.*;
@@ -11,12 +13,13 @@ public class KeyListener implements java.awt.event.KeyListener {
 
     public void keyPressed(KeyEvent keyEvent) {
         KeyCode key = Convert(keyEvent);
-        key.isPressed(true);
+        KeyCode.valueOf(key.keyName()).isPressed(true);
+        Debug.Log(key.toString());
     }
 
     public void keyReleased(KeyEvent keyEvent) {
         KeyCode key = Convert(keyEvent);
-        key.isPressed(false);
+        KeyCode.valueOf(key.keyName()).isPressed(false);
     }
 
     KeyCode Convert(KeyEvent key){
@@ -29,6 +32,7 @@ public class KeyListener implements java.awt.event.KeyListener {
                 keyCode = space;
                 break;
         }
+        Debug.Log(keyCode.toString());
         return keyCode;
     }
 }

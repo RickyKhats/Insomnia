@@ -18,6 +18,7 @@ public class Window {
 
     public Window(String title, int width, int height) {
         window = new JFrame(title);
+        window.setUndecorated(false);
         window.setSize(width, height);
         window.setVisible(true);
         background = new Background(Color.WHITE);
@@ -25,46 +26,59 @@ public class Window {
         background.setSize(width, height);
         keyListener = new KeyListener();
         input = new Input(keyListener);
+        background.addKeyListener(keyListener);
         window.add(background);
     }
 
-    public void BackgroundColor(Color color){
+    public Window BackgroundColor(Color color){
         background.setBackground(color);
+        return this;
     }
 
-    public void Add(View component) {
+    public Window Add(View component) {
         background.add(component);
+        return this;
     }
 
-    public void Size(int weight, int height) {
+    public Window Size(int weight, int height) {
         window.setSize(weight, height);
+        return this;
     }
-    public void Size(Vector2 size) {
+    public Window Size(Vector2 size) {
         window.setSize(size.X(), size.Y());
+        return this;
     }
 
-    public void Resizable(boolean value) {
+    public Window Resizable(boolean value) {
         window.setResizable(value);
+        return this;
+    }
+
+    public Window Undecorated(boolean value) {
+        window.setUndecorated(value);
+        return this;
     }
 
     public Vector2 Size() {
         return new Vector2(window.getX(), window.getY());
     }
 
-    public void Show() {
+    public Window Show() {
         window.setVisible(true);
+        return this;
     }
 
     public boolean ReadKey(KeyCode keyCode) {
-        return false;
+        return input.GetKeyDown(keyCode);
     }
 
     public void Hide() {
         window.setVisible(false);
     }
 
-    public void Title(String title) {
+    public Window Title(String title) {
         window.setTitle(title);
+        return this;
     }
 
     public Object Tree() {

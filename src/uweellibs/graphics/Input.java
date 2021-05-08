@@ -8,7 +8,7 @@ public class Input {
     }
 
     public boolean GetKeyDown(KeyCode keyCode){
-        return keyCode.isPressed();
+        return KeyCode.valueOf(keyCode.keyName()).isPressed();
     }
     public boolean MousePressed(MouseButton mouseButton){
         return false;

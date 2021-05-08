@@ -65,30 +65,25 @@ public class Engine extends MonoBehaviour {
 
         public ConsoleWindow(String title, int weight, int height) {
             try {
-                new AudioPlayer(new File("ambient.wav")).Looping(true).Play();
-                window = new Window(title, 1200, 1000);
-                window.Size(weight, height);
-                scroll = new ScrollView(new Vector2(weight, height), new Vector2(5, 5));
-                console = new TextView("> ", scroll.Position(), scroll.Size());
-                scroll.Add(console);
-                window.Add(scroll);
-                window.Resizable(false);
-                window.BackgroundColor(Color.BLACK);
-                console.TextColor(Color.GREEN);
-                scroll.Size(window.Size().X() + 20, window.Size().Y() - 38);
-                scroll.VerticalScrollBar().setValue(scroll.VerticalScrollBar().getMaximum());
-                console.Size(scroll.Size());
-                console.VerticalAlignment(1);
-                console.HorizontalAlignment(2);
-                scroll.ShearRate(16);
-
-                try {
-                    console.Font(Font.createFont(0, new FileInputStream("main_font.ttf")).deriveFont(Font.PLAIN, 13.0F));
-                } catch (IOException | FontFormatException e) {
-                    new ExceptionOccurred(e);
-                }
-
-                window.Show();
+                new AudioPlayer(
+                        new File("ambient.wav"),
+                        new File("ambient_2.wav"),
+                        new File("ambient_3.wav")).Looping(true).Play();
+                console = new TextView("> ",
+                        new Vector2(0, 0),
+                        new Vector2(weight + 20, height - 38)).
+                        TextColor(Color.GREEN)
+                        .VerticalAlignment(1)
+                        .HorizontalAlignment(2);
+                scroll = new ScrollView(new Vector2(weight, height), new Vector2(5, 5)).
+                        Add(console).
+                        Size(weight + 20, height - 38).
+                        ShearRate(16);
+                window = new Window(title, weight, height)
+                        .Add(scroll)
+                        .Resizable(true)
+                        .BackgroundColor(Color.BLACK)
+                        .Show();
                 FormatText();
                 (new Thread(() -> {
                     int times = 0;
@@ -108,7 +103,7 @@ public class Engine extends MonoBehaviour {
                         }
                     }
                 })).start();
-                new Thread(() -> {
+                (new Thread(() -> {
 
                     Time time = new Time();
                     Time allTime;
@@ -126,7 +121,7 @@ public class Engine extends MonoBehaviour {
                         PlayerPrefs.SetObject("allTime", allTime);
                         new WaitForSeconds(1);
                     } while (true);
-                }).start();
+                })).start();
                 Debug.Log(window.Tree());
             } catch (Exception e) {
                 new ExceptionOccurred(e);
@@ -171,7 +166,12 @@ public class Engine extends MonoBehaviour {
         }
 
         public boolean ReadKey(KeyCode keyCode) {
-            return window.ReadKey(keyCode);
+            try {
+                return window.ReadKey(keyCode);
+            } catch (NullPointerException e) {
+                Debug.WarningLog("window is " + window);
+                return false;
+            }
         }
     }
 }
